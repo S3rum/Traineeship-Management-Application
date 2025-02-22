@@ -8,6 +8,7 @@ public class Evaluation {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(columnDefinition = "BIGINT UNSIGNED")
     private Long id;
 
     // Evaluation by company (e.g., for a traineeship in progress)
