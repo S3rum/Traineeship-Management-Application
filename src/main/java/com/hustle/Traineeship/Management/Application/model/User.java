@@ -1,6 +1,7 @@
 package com.hustle.Traineeship.Management.Application.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import java.util.Collection;
 import java.util.Set;
 import org.springframework.security.core.GrantedAuthority;
@@ -16,17 +17,18 @@ public class User implements UserDetails {
     @Column(columnDefinition = "BIGINT UNSIGNED")
     private Long id;
 
+    @NotBlank
     @Column(nullable = false, unique = true)
     private String username;
 
+    @NotBlank
     @Column(nullable = false)
     private String password;
 
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    // Constructors, getters and setters
-
+    // Default constructor needed for Thymeleaf and JPA
     public User() {}
 
     public User(String username, String password, Role role) {
@@ -49,7 +51,8 @@ public class User implements UserDetails {
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return Set.of(() -> "ROLE_" + role.name());
+        // Return a default role if role is null (optional)
+        return Set.of(() -> "ROLE_" + (role != null ? role.name() : "USER"));
     }
 
     @Override
@@ -57,21 +60,39 @@ public class User implements UserDetails {
         return username;
     }
 
+    // Setter needed for Thymeleaf binding
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     @Override
     public String getPassword() {
         return password;
     }
 
-    // The following methods can be adjusted based on your needs
+    // Setter needed for Thymeleaf binding
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    // The following methods are required by the UserDetails interface
     @Override
-    public boolean isAccountNonExpired() { return true; }
+    public boolean isAccountNonExpired() {
+        return true;
+    }
 
     @Override
-    public boolean isAccountNonLocked() { return true; }
+    public boolean isAccountNonLocked() {
+        return true;
+    }
 
     @Override
-    public boolean isCredentialsNonExpired() { return true; }
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
 
     @Override
-    public boolean isEnabled() { return true; }
+    public boolean isEnabled() {
+        return true;
+    }
 }

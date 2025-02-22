@@ -3,19 +3,35 @@ package com.hustle.Traineeship.Management.Application.controllers;
 import com.hustle.Traineeship.Management.Application.model.User;
 import com.hustle.Traineeship.Management.Application.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
-@RequestMapping("/api/auth")
+@Controller
+@RequestMapping("/auth")
 public class AuthController {
 
     @Autowired
     private UserService userService;
 
-    @PostMapping("/register")
-    public User register(@RequestBody User user) {
-        return userService.registerUser(user);
+    // Display the registration form using Thymeleaf
+    @GetMapping("/register")
+    public String showRegistrationForm(Model model) {
+        model.addAttribute("user", new User());
+        return "register";  // resolves to register.html
     }
 
-    // Login and logout operations are typically managed by Spring Security configuration.
+
+    // Process the registration form submission
+    @PostMapping("/register")
+    public String register(@ModelAttribute("user") User user, Model model) {
+        try {
+            userService.registerUser(user);
+            return "redirect:/login";
+        } catch (RuntimeException e) {
+            model.addAttribute("errorMessage", e.getMessage());
+            // Return back to the registration form with an error
+            return "register";
+        }
+    }
 }
