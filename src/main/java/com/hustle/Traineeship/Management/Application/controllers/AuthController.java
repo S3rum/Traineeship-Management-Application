@@ -34,4 +34,8 @@ public class AuthController {
             return "register";
         }
     }
+    @GetMapping("/login")
+    public String login() {
+        return "login"; // Thymeleaf will resolve this to login.html
+    }
 }
