@@ -1,8 +1,12 @@
 package com.hustle.Traineeship.Management.Application.controllers;
 
+import com.hustle.Traineeship.Management.Application.model.Role;
+import com.hustle.Traineeship.Management.Application.model.Student;
 import com.hustle.Traineeship.Management.Application.model.User;
+import com.hustle.Traineeship.Management.Application.service.StudentsService;
 import com.hustle.Traineeship.Management.Application.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -13,6 +17,9 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
+    @Qualifier("studentsService")
+    @Autowired
+    private StudentsService studentsService;
 
     // Display the registration form using Thymeleaf
     @GetMapping("/register")
@@ -25,15 +32,26 @@ public class AuthController {
     @PostMapping("/register")
     public String register(@ModelAttribute("user") User user, Model model) {
         try {
-            // In the registerUser method, ensure that the password is encoded (e.g., using BCryptPasswordEncoder)
-            userService.registerUser(user);
+            if(user.getRole() == Role.STUDENT) {
+                // Create a Student from the generic user details
+                Student student = new Student();
+                student.setUsername(user.getUsername());
+                student.setPassword(user.getPassword());
+                student.setRole(user.getRole());
+                // Populate additional student-specific fields as needed
+                studentsService.createStudentProfile(student);
+
+                userService.registerUser(student);
+            } else {
+                userService.registerUser(user);
+            }
             return "redirect:/auth/login";
         } catch (RuntimeException e) {
             model.addAttribute("errorMessage", e.getMessage());
-            // Return back to the registration form with an error
             return "register";
         }
     }
+
 
     // Display the login form using Thymeleaf
     @GetMapping("/login")

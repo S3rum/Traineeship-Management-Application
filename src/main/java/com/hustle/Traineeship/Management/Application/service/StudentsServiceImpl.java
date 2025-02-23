@@ -20,7 +20,8 @@ public class StudentsServiceImpl implements StudentsService {
 
     @Override
     public Student findByUsername(String username) {
-        return null;
+        return studentRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Student not found for username: " + username));
     }
 
     @Override

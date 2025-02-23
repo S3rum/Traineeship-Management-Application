@@ -7,30 +7,39 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.security.Principal;
+
 @Controller
-@RequestMapping("/api/students")
+@RequestMapping("/student")
 public class StudentController {
 
     @Autowired
     private StudentsService studentsService;
 
-    @PostMapping("/profile")
-    public Student createProfile(@RequestBody Student student) {
-        return studentsService.createStudentProfile(student);
-    }
-
+    // Display the student's profile page using Thymeleaf.
+    // The Principal object is used to get the username of the logged-in user.
     @GetMapping("/profile")
-    public String showProfileForm(Model model) {
-        // Create a new Student object (or load the logged-in user's profile)
-        model.addAttribute("student", new Student());
-        return "student-profile"; // This should match your Thymeleaf template name (student-profile.html)
+    public String showProfileForm(Model model, Principal principal) {
+        // Load the logged-in student's profile
+        Student student = studentsService.findByUsername(principal.getName());
+        model.addAttribute("student", student);
+        return "student-profile";  // This should correspond to student-profile.html in your templates folder
     }
 
+    // Optionally, process profile updates
+    @PostMapping("/profile")
+    public String updateProfile(@ModelAttribute("student") Student student, Principal principal) {
+        studentsService.updateStudentProfile(student, principal.getName());
+        return "redirect:/student/profile";
+    }
+
+    // Endpoint for applying for a traineeship.
     @PostMapping("/{studentId}/apply")
     public String applyForTraineeship(@PathVariable Long studentId, @RequestParam Long positionId) {
         return studentsService.applyForTraineeship(studentId, positionId);
     }
 
+    // Endpoint for updating the student's logbook.
     @PostMapping("/{studentId}/logbook")
     public String updateLogbook(@PathVariable Long studentId, @RequestBody String entries) {
         return studentsService.updateLogbook(studentId, entries);
