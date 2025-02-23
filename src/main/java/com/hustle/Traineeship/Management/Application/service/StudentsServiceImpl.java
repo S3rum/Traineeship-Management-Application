@@ -19,6 +19,16 @@ public class StudentsServiceImpl implements StudentsService {
     }
 
     @Override
+    public Student findByUsername(String username) {
+        return null;
+    }
+
+    @Override
+    public Student updateStudentProfile(Student student, String username) {
+        return null;
+    }
+
+    @Override
     public String applyForTraineeship(Long studentId, Long positionId) {
         // Logic to link the student with the chosen traineeship position.
         return "Application successful";
