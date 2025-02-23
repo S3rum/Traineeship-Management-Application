@@ -3,10 +3,11 @@ package com.hustle.Traineeship.Management.Application.controllers;
 import com.hustle.Traineeship.Management.Application.model.Student;
 import com.hustle.Traineeship.Management.Application.service.StudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
-@RestController
+@Controller
 @RequestMapping("/api/students")
 public class StudentController {
 
