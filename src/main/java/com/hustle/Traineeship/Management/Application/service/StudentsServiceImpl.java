@@ -5,7 +5,7 @@ import com.hustle.Traineeship.Management.Application.repos.StudentRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-@Service
+@Service("studentsService")
 public class StudentsServiceImpl implements StudentsService {
 
     @Autowired
@@ -26,7 +26,8 @@ public class StudentsServiceImpl implements StudentsService {
 
     @Override
     public Student updateStudentProfile(Student student, String username) {
-        return null;
+        // Implement update logic here (e.g., load the existing student, update fields, and save)
+        return studentRepository.save(student);
     }
 
     @Override
