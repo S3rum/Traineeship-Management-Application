@@ -8,4 +8,5 @@ import org.springframework.stereotype.Service;
 public interface UserService extends UserDetailsService {
     User registerUser(User user);
     // You can add other user-related operations as needed.
+    User loadUserByUsername (String username);
 }

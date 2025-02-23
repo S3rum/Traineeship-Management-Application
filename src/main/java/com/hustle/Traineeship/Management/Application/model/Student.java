@@ -24,7 +24,7 @@ public class Student extends User {
     @OneToOne(mappedBy = "student")
     private TraineeshipPosition traineeshipPosition;
 
-    // Constructors, getters and setters
+    // Constructors
 
     public Student() {
         super();
@@ -41,10 +41,53 @@ public class Student extends User {
         this.preferredLocation = preferredLocation;
     }
 
+    // Getters and Setters
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    public String getUniversityId() {
+        return universityId;
+    }
+
+    public void setUniversityId(String universityId) {
+        this.universityId = universityId;
+    }
+
     public List<String> getInterests() {
         return interests;
     }
 
-    // Getters and setters for all fields
-    // ...
+    public void setInterests(List<String> interests) {
+        this.interests = interests;
+    }
+
+    public List<String> getSkills() {
+        return skills;
+    }
+
+    public void setSkills(List<String> skills) {
+        this.skills = skills;
+    }
+
+    public String getPreferredLocation() {
+        return preferredLocation;
+    }
+
+    public void setPreferredLocation(String preferredLocation) {
+        this.preferredLocation = preferredLocation;
+    }
+
+    public TraineeshipPosition getTraineeshipPosition() {
+        return traineeshipPosition;
+    }
+
+    public void setTraineeshipPosition(TraineeshipPosition traineeshipPosition) {
+        this.traineeshipPosition = traineeshipPosition;
+    }
 }
