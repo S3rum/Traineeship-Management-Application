@@ -25,9 +25,20 @@ public class StudentsServiceImpl implements StudentsService {
     }
 
     @Override
-    public Student updateStudentProfile(Student student, String username) {
-        // Implement update logic here (e.g., load the existing student, update fields, and save)
-        return studentRepository.save(student);
+    public Student updateStudentProfile(Student updatedStudent, String username) {
+        // Load the existing student by username
+        Student existingStudent = studentRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Student not found for username: " + username));
+
+        // Update the necessary fields
+        existingStudent.setFullName(updatedStudent.getFullName());
+        existingStudent.setUniversityId(updatedStudent.getUniversityId());
+        existingStudent.setInterests(updatedStudent.getInterests());
+        existingStudent.setSkills(updatedStudent.getSkills());
+        existingStudent.setPreferredLocation(updatedStudent.getPreferredLocation());
+
+        // Save the updated student to the database
+        return studentRepository.save(existingStudent);
     }
 
     @Override
