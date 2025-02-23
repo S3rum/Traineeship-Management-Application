@@ -3,10 +3,8 @@ package com.hustle.Traineeship.Management.Application.controllers;
 import com.hustle.Traineeship.Management.Application.model.Role;
 import com.hustle.Traineeship.Management.Application.model.Student;
 import com.hustle.Traineeship.Management.Application.model.User;
-import com.hustle.Traineeship.Management.Application.service.StudentsService;
 import com.hustle.Traineeship.Management.Application.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -17,9 +15,7 @@ public class AuthController {
 
     @Autowired
     private UserService userService;
-    @Qualifier("studentsService")
-    @Autowired
-    private StudentsService studentsService;
+
 
     // Display the registration form using Thymeleaf
     @GetMapping("/register")
@@ -39,7 +35,6 @@ public class AuthController {
                 student.setPassword(user.getPassword());
                 student.setRole(user.getRole());
                 // Populate additional student-specific fields as needed
-                studentsService.createStudentProfile(student);
 
                 userService.registerUser(student);
             } else {
