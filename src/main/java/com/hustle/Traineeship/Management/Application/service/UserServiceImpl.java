@@ -4,6 +4,7 @@ import com.hustle.Traineeship.Management.Application.model.User;
 import com.hustle.Traineeship.Management.Application.repos.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -14,19 +15,24 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public User registerUser(User user) {
-        // 1. Check if username is already taken
+        // Check if username is already taken
         Optional<User> existing = userRepository.findByUsername(user.getUsername());
-        if (((Optional<?>) existing).isPresent()) {
-            // 2. Handle it (throw exception or return an error)
+        if (existing.isPresent()) {
             throw new RuntimeException("Username '" + user.getUsername() + "' is already taken.");
         }
 
-        // 3. If username not taken, proceed to save
+        // Encode the raw password before saving
+        user.setPassword(passwordEncoder.encode(user.getPassword()));
+
+        // Save the user
         return userRepository.save(user);
     }
+
     @Override
     public User loadUserByUsername(String username) throws UsernameNotFoundException {
         return userRepository.findByUsername(username)

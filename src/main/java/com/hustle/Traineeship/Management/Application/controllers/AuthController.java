@@ -21,19 +21,21 @@ public class AuthController {
         return "register";  // resolves to register.html
     }
 
-
     // Process the registration form submission
     @PostMapping("/register")
     public String register(@ModelAttribute("user") User user, Model model) {
         try {
+            // In the registerUser method, ensure that the password is encoded (e.g., using BCryptPasswordEncoder)
             userService.registerUser(user);
-            return "redirect:/login";
+            return "redirect:/auth/login";
         } catch (RuntimeException e) {
             model.addAttribute("errorMessage", e.getMessage());
             // Return back to the registration form with an error
             return "register";
         }
     }
+
+    // Display the login form using Thymeleaf
     @GetMapping("/login")
     public String login() {
         return "login"; // Thymeleaf will resolve this to login.html
