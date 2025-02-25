@@ -17,6 +17,8 @@ public class TraineeshipManagementApplication {
 	}
 	@GetMapping
 	public String print(){
+		System.out.println();
 		return "Hello World";
 	}
+
 }
