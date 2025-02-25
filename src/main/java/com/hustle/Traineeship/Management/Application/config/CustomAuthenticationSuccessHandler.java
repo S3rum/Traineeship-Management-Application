@@ -1,18 +1,24 @@
 package com.hustle.Traineeship.Management.Application.config;
 
-import java.io.IOException;
-
-import org.springframework.security.core.Authentication;
-import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
-
+import com.hustle.Traineeship.Management.Application.model.User;
+import com.hustle.Traineeship.Management.Application.model.Role;
+import com.hustle.Traineeship.Management.Application.service.StudentsService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 
-import com.hustle.Traineeship.Management.Application.model.User;
-import com.hustle.Traineeship.Management.Application.model.Role;
+import java.io.IOException;
 
 public class CustomAuthenticationSuccessHandler implements AuthenticationSuccessHandler {
+
+    private final StudentsService studentsService;
+
+    // Constructor injection
+    public CustomAuthenticationSuccessHandler(StudentsService studentsService) {
+        this.studentsService = studentsService;
+    }
 
     @Override
     public void onAuthenticationSuccess(HttpServletRequest request,
@@ -20,29 +26,29 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                                         Authentication authentication)
             throws IOException, ServletException {
 
-        // 1. Retrieve your User from the Principal
         User user = (User) authentication.getPrincipal();
-        Role role = user.getRole();  // e.g. STUDENT, COMPANY, etc.
+        Role role = user.getRole();
 
-        // 2. Redirect based on role
         switch (role) {
             case STUDENT:
-                response.sendRedirect("/student/profile");
+                if (!studentsService.studentProfileExists(user.getId())) {
+                    response.sendRedirect("/student/create_profile");
+                } else {
+                    response.sendRedirect("/student/profile");
+                }
                 break;
             case COMPANY:
-                response.sendRedirect("/company/profile");
+                response.sendRedirect("/company/create_profile");
                 break;
             case PROFESSOR:
-                response.sendRedirect("/professor/profile");
+                response.sendRedirect("/professor/create_profile");
                 break;
             case COMMITTEE:
-                response.sendRedirect("/committee/profile");
+                response.sendRedirect("/committee/create_profile");
                 break;
             default:
-                // Fallback URL
                 response.sendRedirect("/");
                 break;
         }
-
     }
 }

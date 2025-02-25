@@ -20,4 +20,6 @@ public interface StudentsService {
 
     // Update the logbook entries for the student
     String updateLogbook(Long studentId, String entries);
+
+    boolean studentProfileExists(Long userId);
 }

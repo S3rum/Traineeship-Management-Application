@@ -18,20 +18,29 @@ public class StudentController {
 
     // Display the student's profile page using Thymeleaf.
     // The Principal object is used to get the username of the logged-in user.
-    @GetMapping("/profile")
+    @GetMapping("/create_profile")
     public String showProfileForm(Model model, Principal principal) {
         // Load the logged-in student's profile
         Student student = studentsService.findByUsername(principal.getName());
         model.addAttribute("student", student);
-        return "student-profile";  // This should correspond to student-profile.html in your templates folder
+        return "student-profile-creation";  // This should correspond to student-profile-creation.html in your templates folder
     }
 
     // Optionally, process profile updates
-    @PostMapping("/profile")
+    @PostMapping("/create_profile")
     public String updateProfile(@ModelAttribute("student") Student student, Principal principal) {
         studentsService.updateStudentProfile(student, principal.getName());
         return "redirect:/student/profile";
     }
+
+    @GetMapping("/profile")
+    public String viewProfile(Model model, Principal principal) {
+        // Ensure that studentsService.findByUsername returns a valid Student object
+        Student student = studentsService.findByUsername(principal.getName());
+        model.addAttribute("student", student);
+        return "student-profile"; // This should match your Thymeleaf template name
+    }
+
 
     // Endpoint for applying for a traineeship.
     @PostMapping("/{studentId}/apply")

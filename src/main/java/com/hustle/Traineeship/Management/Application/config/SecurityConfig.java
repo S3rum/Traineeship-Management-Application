@@ -1,5 +1,7 @@
 package com.hustle.Traineeship.Management.Application.config;
 
+import com.hustle.Traineeship.Management.Application.service.StudentsService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,6 +14,9 @@ import org.springframework.security.web.authentication.AuthenticationSuccessHand
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+    @Autowired
+    private StudentsService studentsService;
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -26,10 +31,11 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/auth/login")         // custom login page at /auth/login
-                        .successHandler(customSuccessHandler()) // <--- plug in the handler
+                        .loginPage("/auth/login")        // custom login page at /auth/login
+                        .successHandler(customSuccessHandler())
                         .permitAll()
                 )
+
                 .logout(logout -> logout
                         .logoutUrl("/logout")
                         .logoutSuccessUrl("/")  // Redirects to homepage after logout
@@ -40,14 +46,18 @@ public class SecurityConfig {
     }
 
     // Bean method to create your custom success handler
-    @Bean
-    public AuthenticationSuccessHandler customSuccessHandler() {
-        return new CustomAuthenticationSuccessHandler();
-    }
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+    @Bean
+    public AuthenticationSuccessHandler customSuccessHandler() {
+        // Pass the StudentsService into the constructor
+        return new CustomAuthenticationSuccessHandler(studentsService);
+    }
+
+
 
 
 }

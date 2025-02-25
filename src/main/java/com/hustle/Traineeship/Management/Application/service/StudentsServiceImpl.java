@@ -52,4 +52,9 @@ public class StudentsServiceImpl implements StudentsService {
         // Logic to update or create the logbook entry for the student.
         return "Logbook updated";
     }
+
+    @Override
+    public boolean studentProfileExists(Long userId) {
+        return studentRepository.existsByUserId(userId);
+    }
 }

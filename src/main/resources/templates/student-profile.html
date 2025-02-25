@@ -1,108 +1,115 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org" lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Student Profile Setup</title>
-    <style>
-        /* Global styles */
-        body {
-            font-family: Arial, sans-serif;
-            background: #f5f5f5;
-            margin: 0;
-            padding: 0;
-        }
-        /* Sign-out button styles */
-        .signout-container {
-            position: absolute;
-            top: 10px;
-            left: 10px;
-        }
-        .signout-container form button {
-            background-color: #007BFF;
-            color: white;
-            border: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-        }
-        .signout-container form button:hover {
-            background-color: #0056b3;
-        }
-        /* Profile form container */
-        .profile-container {
-            background: #fff;
-            padding: 2em;
-            border-radius: 8px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            width: 400px;
-            margin: 100px auto; /* Centers the container and adds top margin */
-        }
-        .profile-container h1 {
-            text-align: center;
-            margin-bottom: 1em;
-            color: #333;
-        }
-        .profile-container form {
-            display: flex;
-            flex-direction: column;
-        }
-        .profile-container label {
-            margin: 10px 0 5px;
-            font-weight: bold;
-            color: #555;
-        }
-        .profile-container input,
-        .profile-container textarea {
-            padding: 0.6em;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            margin-bottom: 10px;
-        }
-        .profile-container button {
-            padding: 0.8em;
-            background: #28a745;
-            color: #fff;
-            border: none;
-            border-radius: 4px;
-            font-size: 1em;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-        .profile-container button:hover {
-            background: #218838;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>Student Profile</title>
+  <style>
+    /* Global styles */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    /* Sign-out button styles */
+    .signout-container {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+    .signout-container form button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .signout-container form button:hover {
+      background-color: #0056b3;
+    }
+    /* Profile view container */
+    .profile-container {
+      background: #fff;
+      padding: 2em;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      margin: 100px auto;
+    }
+    .profile-container h1 {
+      text-align: center;
+      margin-bottom: 1em;
+      color: #333;
+    }
+    .profile-field {
+      margin-bottom: 15px;
+    }
+    .profile-field label {
+      font-weight: bold;
+      color: #555;
+    }
+    .profile-field span {
+      display: block;
+      padding: 0.5em;
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .edit-button {
+      display: block;
+      width: 100%;
+      padding: 0.8em;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1em;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      margin-top: 20px;
+    }
+    .edit-button:hover {
+      background: #218838;
+    }
+  </style>
 </head>
 <body>
 <!-- Sign-out button positioned at the top left -->
 <div class="signout-container">
-    <form th:action="@{/logout}" method="post">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <button type="submit">Sign Out</button>
-    </form>
+  <form th:action="@{/logout}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <button type="submit">Sign Out</button>
+  </form>
 </div>
 
-<!-- Profile setup form -->
+<!-- Profile view container -->
 <div class="profile-container">
-    <h1>Set Up Your Profile</h1>
-    <form th:action="@{/student/profile}" th:object="${student}" method="post">
-        <label for="fullName">Full Name:</label>
-        <input type="text" id="fullName" th:field="*{fullName}" placeholder="Enter your full name" required />
+  <h1>Your Profile</h1>
+  <div class="profile-field">
+    <label>Full Name:</label>
+    <span th:text="${student.fullName}">Full Name Here</span>
+  </div>
+  <div class="profile-field">
+    <label>University ID:</label>
+    <span th:text="${student.universityId}">University ID Here</span>
+  </div>
+  <div class="profile-field">
+    <label>Interests:</label>
+    <span th:text="${student.interests}">Interests Here</span>
+  </div>
+  <div class="profile-field">
+    <label>Skills:</label>
+    <span th:text="${student.skills}">Skills Here</span>
+  </div>
+  <div class="profile-field">
+    <label>Preferred Location:</label>
+    <span th:text="${student.preferredLocation}">Preferred Location Here</span>
+  </div>
 
-        <label for="universityId">University ID:</label>
-        <input type="text" id="universityId" th:field="*{universityId}" placeholder="Your university ID" required />
-
-        <label for="interests">Interests:</label>
-        <textarea id="interests" th:field="*{interests}" placeholder="List your interests" rows="3"></textarea>
-
-        <label for="skills">Skills:</label>
-        <textarea id="skills" th:field="*{skills}" placeholder="List your skills" rows="3"></textarea>
-
-        <label for="preferredLocation">Preferred Location:</label>
-        <input type="text" id="preferredLocation" th:field="*{preferredLocation}" placeholder="Where do you prefer to study/work?" />
-
-        <button type="submit">Save Profile</button>
-    </form>
+  <!-- Button to redirect to profile creation/edit page -->
+  <a class="edit-button" th:href="@{/student/create_profile}">Edit Profile</a>
 </div>
 </body>
 </html>
