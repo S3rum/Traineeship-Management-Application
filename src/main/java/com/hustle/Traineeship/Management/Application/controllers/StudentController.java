@@ -20,6 +20,7 @@ public class StudentController {
     // The Principal object is used to get the username of the logged-in user.
     @GetMapping("/create_profile")
     public String showProfileForm(Model model, Principal principal) {
+        System.out.println();
         // Load the logged-in student's profile
         Student student = studentsService.findByUsername(principal.getName());
         model.addAttribute("student", student);
