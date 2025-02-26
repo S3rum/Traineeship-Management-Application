@@ -25,6 +25,23 @@ public class Professor extends User {
         this.interests = interests;
     }
 
-    // Getters and setters
-    // ...
+    // Getter and Setter for fullName
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
+
+    // Getter and Setter for interests
+    public List<String> getInterests() {
+        return interests;
+    }
+
+    public void setInterests(List<String> interests) {
+        this.interests = interests;
+    }
+
+    // Optionally, getters and setters for supervisedPositions if needed
 }

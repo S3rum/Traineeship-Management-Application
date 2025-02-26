@@ -8,4 +8,9 @@ public interface ProfessorService {
     Professor createProfessorProfile(Professor professor);
     List<TraineeshipPosition> getSupervisedPositions(Long professorId);
     String evaluateTraineeship(Long positionId, int motivationRating, int effectivenessRating, int efficiencyRating, int companyFacilitiesRating, int companyGuidanceRating);
+
+    boolean professorProfileExists(Long userId);
+
+    Professor findByUsername(String username);
+    Professor updateProfessorProfile(Professor updatedProfessor, String username);
 }

@@ -1,5 +1,6 @@
 package com.hustle.Traineeship.Management.Application.config;
 
+import com.hustle.Traineeship.Management.Application.service.ProfessorService;
 import com.hustle.Traineeship.Management.Application.service.StudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
@@ -18,46 +19,38 @@ public class SecurityConfig {
     @Autowired
     private StudentsService studentsService;
 
+    @Autowired
+    private ProfessorService professorService;  // Inject the professor service
+
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/login", "/auth/register", "/css/**", "/js/**").permitAll()
-                        // Optionally, restrict pages by role if you like:
-                        // .requestMatchers("/student/**").hasRole("STUDENT")
-                        // .requestMatchers("/company/**").hasRole("COMPANY")
-                        // .requestMatchers("/professor/**").hasRole("PROFESSOR")
-                        // .requestMatchers("/committee/**").hasRole("COMMITTEE")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/auth/login")        // custom login page at /auth/login
-                        .successHandler(customSuccessHandler())
+                        .loginPage("/auth/login") // custom login page
+                        // Now call customSuccessHandler with both dependencies
+                        .successHandler(customSuccessHandler(studentsService, professorService))
                         .permitAll()
                 )
-
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/")  // Redirects to homepage after logout
+                        .logoutSuccessUrl("/") // Redirects to homepage after logout
                         .permitAll()
                 );
 
         return http.build();
     }
 
-    // Bean method to create your custom success handler
-
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
     }
+
     @Bean
-    public AuthenticationSuccessHandler customSuccessHandler() {
-        // Pass the StudentsService into the constructor
-        return new CustomAuthenticationSuccessHandler(studentsService);
+    public AuthenticationSuccessHandler customSuccessHandler(StudentsService studentsService, ProfessorService professorService) {
+        return new CustomAuthenticationSuccessHandler(studentsService, professorService);
     }
-
-
-
-
 }
