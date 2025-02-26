@@ -4,7 +4,7 @@ import com.hustle.Traineeship.Management.Application.model.*;
 import com.hustle.Traineeship.Management.Application.repos.CompanyRepository;
 import com.hustle.Traineeship.Management.Application.repos.ProfessorRepository;
 import com.hustle.Traineeship.Management.Application.repos.StudentRepository;
-//import com.hustle.Traineeship.Management.Application.repos.UserRepository;
+import com.hustle.Traineeship.Management.Application.repos.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -18,8 +18,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @ExtendWith(MockitoExtension.class)
 
 class RegistrationTest {
-    //@Mock
-    //UserRepository userRepository;
+    @Mock
+    UserRepository userRepository;
     @Mock
     StudentRepository studentRepository;
     @Mock
