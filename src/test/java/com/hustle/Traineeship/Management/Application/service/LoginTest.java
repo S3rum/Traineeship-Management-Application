@@ -6,6 +6,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 public class LoginTest {
 
-    //good job kourkakis my nigga
+
 
 }
