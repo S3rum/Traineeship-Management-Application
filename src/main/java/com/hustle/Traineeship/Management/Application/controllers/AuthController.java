@@ -5,6 +5,7 @@ import com.hustle.Traineeship.Management.Application.model.User;
 import com.hustle.Traineeship.Management.Application.repos.StudentRepository;
 import com.hustle.Traineeship.Management.Application.service.ProfessorService;
 import com.hustle.Traineeship.Management.Application.service.StudentsService;
+import com.hustle.Traineeship.Management.Application.service.CompanyService;
 import com.hustle.Traineeship.Management.Application.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
@@ -46,8 +47,8 @@ public class AuthController {
     }
 
 
-    public AuthenticationSuccessHandler customSuccessHandler(StudentsService studentsService, ProfessorService professorService) {
-        return new CustomAuthenticationSuccessHandler(studentsService, professorService);
+    public AuthenticationSuccessHandler customSuccessHandler(StudentsService studentsService, ProfessorService professorService,CompanyService companyService) {
+        return new CustomAuthenticationSuccessHandler(studentsService, professorService,companyService);
     }
 
     // Display the login form using Thymeleaf

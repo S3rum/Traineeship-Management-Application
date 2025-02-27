@@ -2,6 +2,7 @@ package com.hustle.Traineeship.Management.Application.config;
 
 import com.hustle.Traineeship.Management.Application.service.ProfessorService;
 import com.hustle.Traineeship.Management.Application.service.StudentsService;
+import com.hustle.Traineeship.Management.Application.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -22,6 +23,8 @@ public class SecurityConfig {
     @Autowired
     private ProfessorService professorService;  // Inject the professor service
 
+    @Autowired
+    private CompanyService companyService;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
@@ -32,7 +35,7 @@ public class SecurityConfig {
                 .formLogin(form -> form
                         .loginPage("/auth/login") // custom login page
                         // Now call customSuccessHandler with both dependencies
-                        .successHandler(customSuccessHandler(studentsService, professorService))
+                        .successHandler(customSuccessHandler(studentsService, professorService,companyService))
                         .permitAll()
                 )
                 .logout(logout -> logout
@@ -50,7 +53,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationSuccessHandler customSuccessHandler(StudentsService studentsService, ProfessorService professorService) {
-        return new CustomAuthenticationSuccessHandler(studentsService, professorService);
+    public AuthenticationSuccessHandler customSuccessHandler(StudentsService studentsService, ProfessorService professorService,CompanyService companyService) {
+        return new CustomAuthenticationSuccessHandler(studentsService, professorService, companyService);
     }
 }

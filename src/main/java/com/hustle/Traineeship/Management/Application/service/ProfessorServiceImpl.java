@@ -55,7 +55,7 @@ public class ProfessorServiceImpl implements ProfessorService {
     }
     public Professor findByUsername(String username) {
         return professorRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Student not found for username: " + username));
+                .orElseThrow(() -> new RuntimeException("Professor not found for username: " + username));
     }
 }
 

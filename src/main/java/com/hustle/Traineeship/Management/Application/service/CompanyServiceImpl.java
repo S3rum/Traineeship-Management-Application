@@ -1,6 +1,7 @@
 package com.hustle.Traineeship.Management.Application.service;
 
 import com.hustle.Traineeship.Management.Application.model.Company;
+import com.hustle.Traineeship.Management.Application.model.Professor;
 import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
 import com.hustle.Traineeship.Management.Application.repos.CompanyRepository;
 import com.hustle.Traineeship.Management.Application.repos.TraineeshipPositionRepository;
@@ -45,5 +46,13 @@ public class CompanyServiceImpl implements CompanyService {
     public List<TraineeshipPosition> getAvailablePositions(Long companyId) {
         // Retrieve positions that are not yet assigned.
         return positionRepository.findByCompanyIdAndStudentIsNull(companyId);
+    }
+
+    public boolean companyProfileExists(Long userId) {
+        return companyRepository.existsByUserId(userId);
+    }
+    public Company findByUsername(String username) {
+        return companyRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Professor not found for username: " + username));
     }
 }

@@ -4,6 +4,7 @@ import com.hustle.Traineeship.Management.Application.model.User;
 import com.hustle.Traineeship.Management.Application.model.Role;
 import com.hustle.Traineeship.Management.Application.service.StudentsService;
 import com.hustle.Traineeship.Management.Application.service.ProfessorService;
+import com.hustle.Traineeship.Management.Application.service.CompanyService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -15,11 +16,13 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
     private final StudentsService studentsService;
     private final ProfessorService professorService;
+    private final CompanyService companyService;
 
     // Constructor injection for both services
-    public CustomAuthenticationSuccessHandler(StudentsService studentsService, ProfessorService professorsService) {
+    public CustomAuthenticationSuccessHandler(StudentsService studentsService, ProfessorService professorsService, CompanyService companyService) {
         this.studentsService = studentsService;
         this.professorService = professorsService;
+        this.companyService = companyService;
     }
 
     @Override
@@ -40,9 +43,12 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 }
                 break;
             case COMPANY:
-                response.sendRedirect("/company/create_profile");
+                if (!companyService.companyProfileExists(user.getId())) {
+                    response.sendRedirect("/company/create_profile");
+                } else {
+                    response.sendRedirect("/company/profile");
+                }
                 break;
-
             case PROFESSOR:
                 if (!professorService.professorProfileExists(user.getId())) {
                     response.sendRedirect("/professor/create_profile");
