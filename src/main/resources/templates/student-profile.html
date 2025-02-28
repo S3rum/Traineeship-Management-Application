@@ -56,7 +56,7 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    .edit-button {
+    .edit-button, .apply-button {
       display: block;
       width: 100%;
       padding: 0.8em;
@@ -70,7 +70,7 @@
       text-decoration: none;
       margin-top: 20px;
     }
-    .edit-button:hover {
+    .edit-button:hover, .apply-button:hover {
       background: #218838;
     }
   </style>
@@ -110,6 +110,9 @@
 
   <!-- Button to redirect to profile creation/edit page -->
   <a class="edit-button" th:href="@{/student/create_profile}">Edit Profile</a>
+
+  <!-- Button to redirect to the internship selection page -->
+  <a class="apply-button" th:href="@{'/student/' + ${student.id} + '/apply'}">Select Traineeship</a>
 </div>
 </body>
 </html>

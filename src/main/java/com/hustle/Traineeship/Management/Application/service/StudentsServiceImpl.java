@@ -1,15 +1,22 @@
 package com.hustle.Traineeship.Management.Application.service;
 
 import com.hustle.Traineeship.Management.Application.model.Student;
+import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
 import com.hustle.Traineeship.Management.Application.repos.StudentRepository;
+import com.hustle.Traineeship.Management.Application.repos.TraineeshipPositionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service("studentsService")
 public class StudentsServiceImpl implements StudentsService {
 
     @Autowired
     private StudentRepository studentRepository;
+
+    @Autowired
+    private TraineeshipPositionRepository positionRepository;
 
     // Assume you have a TraineeshipPositionRepository injected as well for application logic.
 
@@ -56,5 +63,15 @@ public class StudentsServiceImpl implements StudentsService {
     @Override
     public boolean studentProfileExists(Long userId) {
         return studentRepository.existsByUserId(userId);
+    }
+
+    @Override
+    public Student findStudentById(Long studentId) {
+        return studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found for studentId: " + studentId));
+    }
+    @Override
+    public List<TraineeshipPosition> getAvailableTraineeshipPositions() {
+        return positionRepository.getAvailableTraineeshipPositions();
     }
 }

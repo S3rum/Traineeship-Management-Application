@@ -40,10 +40,83 @@ public class TraineeshipPosition {
     @OneToOne(mappedBy = "traineeshipPosition", cascade = CascadeType.ALL)
     private Evaluation evaluation;
 
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public LocalDate getStartDate() {
+        return startDate;
+    }
+
+    public void setStartDate(LocalDate startDate) {
+        this.startDate = startDate;
+    }
+
+    public LocalDate getEndDate() {
+        return endDate;
+    }
+
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public List<String> getRequiredSkills() {
+        return requiredSkills;
+    }
+
+    public void setRequiredSkills(List<String> requiredSkills) {
+        this.requiredSkills = requiredSkills;
+    }
+
     public List<String> getTopics() {
         return topics;
     }
 
-    // Constructors, getters and setters
-    // ...
+    public void setTopics(List<String> topics) {
+        this.topics = topics;
+    }
+
+    public Company getCompany() {
+        return company;
+    }
+
+    public void setCompany(Company company) {
+        this.company = company;
+    }
+
+    public Student getStudent() {
+        return student;
+    }
+
+    public void setStudent(Student student) {
+        this.student = student;
+    }
+
+    public Professor getSupervisor() {
+        return supervisor;
+    }
+
+    public void setSupervisor(Professor supervisor) {
+        this.supervisor = supervisor;
+    }
+
+    public Evaluation getEvaluation() {
+        return evaluation;
+    }
+
+    public void setEvaluation(Evaluation evaluation) {
+        this.evaluation = evaluation;
+    }
 }
