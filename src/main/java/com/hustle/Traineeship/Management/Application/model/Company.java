@@ -24,6 +24,21 @@ public class Company extends User {
         this.location = location;
     }
 
-    // Getters and setters
-    // ...
+    public String getCompanyName() {
+        return companyName;
+    }
+
+    public void setCompanyName(String companyName) {
+        this.companyName = companyName;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
+    }
+
+    // Optionally, getters and setters for traineeshipPositions if needed
 }

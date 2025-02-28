@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Company Profile Creation</title>
+  <style>
+    /* Global styles */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    /* Container for the form */
+    .form-container {
+      background: #fff;
+      padding: 2em;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      margin: 100px auto;
+    }
+    .form-container h1 {
+      text-align: center;
+      margin-bottom: 1em;
+      color: #333;
+    }
+    .form-field {
+      margin-bottom: 15px;
+    }
+    .form-field label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      color: #555;
+    }
+    .form-field input[type="text"],
+    .form-field textarea {
+      width: 100%;
+      padding: 0.5em;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .form-container button {
+      width: 100%;
+      padding: 0.8em;
+      background: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1em;
+      cursor: pointer;
+    }
+    .form-container button:hover {
+      background: #0056b3;
+    }
+    /* Sign-out button styles */
+    .signout-container {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+    .signout-container form button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .signout-container form button:hover {
+      background-color: #0056b3;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sign-out button positioned at the top left -->
+<div class="signout-container">
+  <form th:action="@{/logout}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <button type="submit">Sign Out</button>
+  </form>
+</div>
+
+<!-- Form container for company profile creation/edit -->
+<div class="form-container">
+  <h1>Create or Edit Company Profile</h1>
+  <form th:action="@{/company/create_profile}" th:object="${company}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+
+    <div class="form-field">
+      <label for="companyName">Company Name:</label>
+      <input type="text" id="companyName" th:field="*{companyName}" />
+    </div>
+
+    <div class="form-field">
+      <label for="location">Location:</label>
+      <input type="text" id="location" th:field="*{location}" />
+    </div>
+
+    <button type="submit">Save Profile</button>
+  </form>
+</div>
+
+</body>
+</html>

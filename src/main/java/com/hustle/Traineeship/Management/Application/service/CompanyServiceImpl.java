@@ -46,4 +46,25 @@ public class CompanyServiceImpl implements CompanyService {
         // Retrieve positions that are not yet assigned.
         return positionRepository.findByCompanyIdAndStudentIsNull(companyId);
     }
+
+    public boolean companyProfileExists(Long userId) {
+        return companyRepository.existsByUserId(userId);
+    }
+    public Company findByUsername(String username) {
+        return companyRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Company not found for username: " + username));
+    }
+    public void updateCompanyProfile(Company updatedCompany, String username) {
+        // Load the existing company by username
+        Company existingCompany = companyRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Company not found for username: " + username));
+
+        // Update the necessary fields
+        existingCompany.setCompanyName(updatedCompany.getCompanyName());
+        existingCompany.setLocation(updatedCompany.getLocation());
+        // If there are additional fields to update, add them here
+
+        // Save the updated professor to the database
+        companyRepository.save(existingCompany);
+    }
 }

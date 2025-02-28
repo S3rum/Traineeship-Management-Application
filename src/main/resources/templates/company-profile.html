@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Company Profile</title>
+  <style>
+    /* Global styles */
+    body {
+      font-family: Arial, sans-serif;
+      background: #f5f5f5;
+      margin: 0;
+      padding: 0;
+    }
+    /* Sign-out button styles */
+    .signout-container {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+    }
+    .signout-container form button {
+      background-color: #007BFF;
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+    .signout-container form button:hover {
+      background-color: #0056b3;
+    }
+    /* Profile view container */
+    .profile-container {
+      background: #fff;
+      padding: 2em;
+      border-radius: 8px;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+      width: 400px;
+      margin: 100px auto;
+    }
+    .profile-container h1 {
+      text-align: center;
+      margin-bottom: 1em;
+      color: #333;
+    }
+    .profile-field {
+      margin-bottom: 15px;
+    }
+    .profile-field label {
+      font-weight: bold;
+      color: #555;
+    }
+    .profile-field span {
+      display: block;
+      padding: 0.5em;
+      background: #f9f9f9;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    .edit-button {
+      display: block;
+      width: 100%;
+      padding: 0.8em;
+      background: #28a745;
+      color: #fff;
+      border: none;
+      border-radius: 4px;
+      font-size: 1em;
+      cursor: pointer;
+      text-align: center;
+      text-decoration: none;
+      margin-top: 20px;
+    }
+    .edit-button:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sign-out button positioned at the top left -->
+<div class="signout-container">
+  <form th:action="@{/logout}" method="post">
+    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+    <button type="submit">Sign Out</button>
+  </form>
+</div>
+
+<!-- Profile view container -->
+<div class="profile-container">
+  <h1>Company Profile</h1>
+  <div class="profile-field">
+    <label>Company Name:</label>
+    <span th:text="${company.companyName}">Company Name Here</span>
+  </div>
+  <div class="profile-field">
+    <label>Location:</label>
+    <span th:text="${company.location}">Location Here</span>
+  </div>
+
+
+  <!-- Button to redirect to profile creation/edit page -->
+  <a class="edit-button" th:href="@{/company/create_profile}">Edit Profile</a>
+</div>
+
+</body>
+</html>
