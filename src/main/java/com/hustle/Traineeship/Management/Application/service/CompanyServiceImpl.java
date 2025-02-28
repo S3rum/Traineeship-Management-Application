@@ -1,7 +1,6 @@
 package com.hustle.Traineeship.Management.Application.service;
 
 import com.hustle.Traineeship.Management.Application.model.Company;
-import com.hustle.Traineeship.Management.Application.model.Professor;
 import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
 import com.hustle.Traineeship.Management.Application.repos.CompanyRepository;
 import com.hustle.Traineeship.Management.Application.repos.TraineeshipPositionRepository;
@@ -53,6 +52,19 @@ public class CompanyServiceImpl implements CompanyService {
     }
     public Company findByUsername(String username) {
         return companyRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Professor not found for username: " + username));
+                .orElseThrow(() -> new RuntimeException("Company not found for username: " + username));
+    }
+    public void updateCompanyProfile(Company updatedCompany, String username) {
+        // Load the existing company by username
+        Company existingCompany = companyRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Company not found for username: " + username));
+
+        // Update the necessary fields
+        existingCompany.setCompanyName(updatedCompany.getCompanyName());
+        existingCompany.setLocation(updatedCompany.getLocation());
+        // If there are additional fields to update, add them here
+
+        // Save the updated professor to the database
+        companyRepository.save(existingCompany);
     }
 }
