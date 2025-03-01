@@ -46,25 +46,22 @@ public class StudentController {
         return "student-profile"; // Corresponding template: student-profile.html
     }
 
-    // GET endpoint for displaying the traineeship selection page.
     @GetMapping("/{studentId}/apply")
-    public String showTraineeshipSelection(@PathVariable Long studentId, Model model) {
+    public String showTraineeshipSelection(@PathVariable Long studentId, Model model, Principal principal) {
+        // Optionally, you can verify that the principal matches the studentId.
         Student student = studentsService.findStudentById(studentId);
         model.addAttribute("student", student);
 
         List<TraineeshipPosition> availablePositions = studentsService.getAvailableTraineeshipPositions();
         model.addAttribute("positions", availablePositions);
 
-        return "traineeship-selection"; // Create traineeship-selection.html accordingly.
+        // This view will display a list of available traineeship positions.
+        return "traineeship-selection";
     }
 
-    // POST endpoint for applying for a traineeship.
-    // Remove the studentId from the path and use Principal
     @PostMapping("/apply")
     public String applyForTraineeship(@RequestParam Long positionId, Principal principal) {
-        // Retrieve the student by username from Principal
         Student student = studentsService.findByUsername(principal.getName());
-        // Apply using the student's id
         studentsService.applyForTraineeship(student.getId(), positionId);
         return "redirect:/student/profile";
     }
@@ -72,39 +69,65 @@ public class StudentController {
 
     // GET endpoint for displaying the traineeship logbook.
     @GetMapping("/{studentId}/traineeship_logbook")
-    public String showTraineeshipLogbook(@PathVariable("studentId") Long studentId, Model model) {
+    public String showTraineeshipLogbook(@PathVariable("studentId") Long studentId, Model model, Principal principal) {
         Student student = studentsService.findStudentById(studentId);
         model.addAttribute("student", student);
 
-        // Retrieve the logbook entries for the student.
         List<TraineeshipLogBook> logbookEntries = studentsService.getTraineeshipLogbook(studentId);
         model.addAttribute("logbook", logbookEntries);
 
-        // Provide an empty log entry object for the form.
+        // Provide an empty log entry object for adding a new entry.
         model.addAttribute("logEntry", new TraineeshipLogBook());
 
-        return "traineeship-logbook";  // This corresponds to traineeship-logbook.html
+        return "traineeship-logbook";
     }
 
     // POST endpoint for adding a log entry.
     @PostMapping("/{studentId}/traineeship_logbook")
     public String addLogEntry(@PathVariable("studentId") Long studentId,
-                              @ModelAttribute("logEntry") TraineeshipLogBook logEntry) {
+                              @ModelAttribute("logEntry") TraineeshipLogBook logEntry,
+                              Principal principal) {
+        // Optionally, verify that principal corresponds to studentId.
         studentsService.addLogEntry(studentId, logEntry);
         return "redirect:/student/" + studentId + "/traineeship_logbook";
     }
 
+    // GET endpoint to display the edit form for a log entry.
     @GetMapping("/{studentId}/traineeship_logbook/edit/{entryId}")
-    public String editLogEntry(@PathVariable Long studentId, @PathVariable Long entryId, Model model) {
-        // Retrieve the log entry by entryId, add it to the model, and return an edit view.
-        TraineeshipLogBook entry = studentsService.findLogEntryById(entryId);
-        model.addAttribute("logEntry", entry);
-        model.addAttribute("studentId", studentId);
-        return "edit-traineeship-logbook"; // Create this template accordingly.
+    public String editLogEntryForm(@PathVariable Long studentId,
+                                   @PathVariable Long entryId,
+                                   Model model,
+                                   Principal principal) {
+        // Optionally verify that the current user is allowed to edit this entry.
+        Student student = studentsService.findStudentById(studentId);
+        TraineeshipLogBook logEntry = studentsService.findLogEntryById(entryId);
+        model.addAttribute("student", student);
+        model.addAttribute("logEntry", logEntry);
+        return "edit-traineeship-logbook";
     }
 
-    @GetMapping("/{studentId}/traineeship_logbook/delete/{entryId}")
-    public String deleteLogEntry(@PathVariable Long studentId, @PathVariable Long entryId) {
+    // POST endpoint for updating a log entry.
+    @PostMapping("/{studentId}/traineeship_logbook/edit/{entryId}")
+    public String updateLogEntry(@PathVariable Long studentId,
+                                 @PathVariable Long entryId,
+                                 @ModelAttribute("logEntry") TraineeshipLogBook updatedEntry,
+                                 Principal principal) {
+        // Optionally verify that the current user is allowed to update this entry.
+        TraineeshipLogBook existingEntry = studentsService.findLogEntryById(entryId);
+        existingEntry.setStartDate(updatedEntry.getStartDate());
+        existingEntry.setEndDate(updatedEntry.getEndDate());
+        existingEntry.setDescription(updatedEntry.getDescription());
+        // If you have a dedicated update method in the service, call it here.
+        studentsService.updateLogEntry(studentId, existingEntry);
+        return "redirect:/student/" + studentId + "/traineeship_logbook";
+    }
+
+    // POST endpoint for deleting a log entry.
+    @PostMapping("/{studentId}/traineeship_logbook/delete/{entryId}")
+    public String deleteLogEntry(@PathVariable Long studentId,
+                                 @PathVariable Long entryId,
+                                 Principal principal) {
+        // Optionally verify that the current user is allowed to delete this entry.
         studentsService.deleteLogEntry(entryId);
         return "redirect:/student/" + studentId + "/traineeship_logbook";
     }

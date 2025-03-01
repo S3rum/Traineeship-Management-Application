@@ -41,9 +41,9 @@
             border: 1px solid #ccc;
             border-radius: 4px;
         }
+
+        /* Global button styles */
         button {
-            display: block;
-            width: 100%;
             padding: 0.8em;
             background: #28a745;
             color: #fff;
@@ -55,18 +55,33 @@
         button:hover {
             background: #218838;
         }
+
+        /* Full-width class just for the "Add Log Entry" button */
+        .full-width-button {
+            display: block;
+            width: 100%;
+        }
+
+        /* Force each row to stay on one line */
         table {
             width: 100%;
             border-collapse: collapse;
+            table-layout: fixed; /* Ensures fixed column widths */
         }
         th, td {
             border: 1px solid #ddd;
             padding: 0.8em;
             text-align: left;
+
+            /* Disable wrapping and show ellipses if too wide */
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
         th {
             background: #f2f2f2;
         }
+
         .back-button {
             display: inline-block;
             margin-top: 1em;
@@ -79,6 +94,7 @@
         .back-button:hover {
             background: #0056b3;
         }
+
         /* Styles for edit and delete buttons */
         .edit-button, .delete-button {
             display: inline-block;
@@ -108,7 +124,6 @@
 
     <!-- Form to add a new log entry -->
     <form th:action="@{'/student/' + ${student.id} + '/traineeship_logbook'}" method="post">
-        <!-- If CSRF is enabled, include the token -->
         <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
         <div>
             <label for="startDate">Start Date:</label>
@@ -120,12 +135,12 @@
         </div>
         <div>
             <label for="description">Description:</label>
-            <textarea id="description" name="description" rows="4" placeholder="Enter details about your traineeship" required></textarea>
+            <textarea id="description" name="description" rows="4"
+                      placeholder="Enter details about your traineeship" required></textarea>
         </div>
-        <button type="submit">Add Log Entry</button>
+        <button type="submit" class="full-width-button">Add Log Entry</button>
     </form>
 
-    <!-- Display existing log entries -->
     <h2>Existing Log Entries</h2>
     <table>
         <thead>
@@ -137,13 +152,20 @@
         </tr>
         </thead>
         <tbody>
-        <tr th:each="entry : ${logbook}">
-            <td th:text="${entry.startDate}">2025-01-01</td>
-            <td th:text="${entry.endDate}">2025-06-01</td>
-            <td th:text="${entry.description}">Description goes here</td>
+        <tr th:each="logEntry : ${logbook}">
+            <td th:text="${logEntry.startDate}">2025-01-01</td>
+            <td th:text="${logEntry.endDate}">2025-06-01</td>
+            <td th:text="${logEntry.description}">Description goes here</td>
             <td>
-                <a class="edit-button" th:href="@{'/student/' + ${student.id} + '/traineeship_logbook/edit/' + ${entry.id}}">Edit</a>
-                <a class="delete-button" th:href="@{'/student/' + ${student.id} + '/traineeship_logbook/delete/' + ${entry.id}}">Delete</a>
+                <form th:action="@{'/student/' + ${student.id} + '/traineeship_logbook/delete/' + ${logEntry.id}}"
+                      method="post" style="display:inline-block; margin-right:5px;">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit" class="delete-button">Delete</button>
+                </form>
+                <a th:href="@{'/student/' + ${student.id} + '/traineeship_logbook/edit/' + ${logEntry.id}}"
+                   class="edit-button" style="display:inline-block;">
+                    Edit
+                </a>
             </td>
         </tr>
         <tr th:if="${#lists.isEmpty(logbook)}">
@@ -152,7 +174,6 @@
         </tbody>
     </table>
 
-    <!-- Back to Profile Button -->
     <div style="text-align:center; margin-top:1em;">
         <a class="back-button" th:href="@{/student/profile}">Back to Profile</a>
     </div>

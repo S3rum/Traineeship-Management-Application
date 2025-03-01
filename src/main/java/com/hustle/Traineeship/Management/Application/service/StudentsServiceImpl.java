@@ -117,4 +117,12 @@ public class StudentsServiceImpl implements StudentsService {
         logBookRepository.deleteById(entryId);
     }
 
+    @Override
+    public TraineeshipLogBook updateLogEntry(Long studentId, TraineeshipLogBook entry) {
+        // Here, you can ensure the student is set and then update.
+        Student student = findStudentById(studentId);
+        entry.setStudent(student);
+        return logBookRepository.save(entry);
+    }
+
 }
