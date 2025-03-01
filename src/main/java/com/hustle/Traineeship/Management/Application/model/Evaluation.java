@@ -67,6 +67,46 @@ public class Evaluation {
         this.efficiencyRating = efficiencyRating;
     }
 
+    public Integer getProfessorMotivationRating() {
+        return professorMotivationRating;
+    }
+
+    public void setProfessorMotivationRating(Integer professorMotivationRating) {
+        this.professorMotivationRating = professorMotivationRating;
+    }
+
+    public Integer getProfessorEffectivenessRating() {
+        return professorEffectivenessRating;
+    }
+
+    public void setProfessorEffectivenessRating(Integer professorEffectivenessRating) {
+        this.professorEffectivenessRating = professorEffectivenessRating;
+    }
+
+    public Integer getProfessorEfficiencyRating() {
+        return professorEfficiencyRating;
+    }
+
+    public void setProfessorEfficiencyRating(Integer professorEfficiencyRating) {
+        this.professorEfficiencyRating = professorEfficiencyRating;
+    }
+
+    public Integer getCompanyFacilitiesRating() {
+        return companyFacilitiesRating;
+    }
+
+    public void setCompanyFacilitiesRating(Integer companyFacilitiesRating) {
+        this.companyFacilitiesRating = companyFacilitiesRating;
+    }
+
+    public Integer getCompanyGuidanceRating() {
+        return companyGuidanceRating;
+    }
+
+    public void setCompanyGuidanceRating(Integer companyGuidanceRating) {
+        this.companyGuidanceRating = companyGuidanceRating;
+    }
+
     // Constructors, getters and setters
     // ...
 }

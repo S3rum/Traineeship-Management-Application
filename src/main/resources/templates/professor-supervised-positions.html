@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="">
+<head>
+    <title>Supervised Traineeship Positions</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f5f5f5;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            margin: 2em auto;
+            width: 80%;
+            background: #fff;
+            padding: 2em;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        h1 {
+            text-align: center;
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1em;
+        }
+        table, th, td {
+            border: 1px solid #ccc;
+        }
+        th, td {
+            padding: 0.75em;
+            text-align: left;
+        }
+        th {
+            background-color: #eee;
+        }
+        .signout-container {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+        }
+        .signout-container form button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .signout-container form button:hover {
+            background-color: #0056b3;
+        }
+        .evaluate-button {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+            cursor: pointer;
+        }
+        .evaluate-button:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<body>
+
+<!-- Sign-out button -->
+<div class="signout-container">
+    <form th:action="@{/logout}" method="post">
+        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+        <button type="submit">Sign Out</button>
+    </form>
+</div>
+
+<div class="container">
+    <h1>Supervised Traineeship Positions</h1>
+    <table>
+        <thead>
+        <tr>
+            <th>ID</th>
+            <th>Description</th>
+            <th>Start Date</th>
+            <th>End Date</th>
+            <th>Student Name</th>
+            <th>Company Name</th>
+            <th>Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="position : ${positions}">
+            <td th:text="${position.id}"></td>
+            <td th:text="${position.description}"></td>
+            <td th:text="${position.startDate}"></td>
+            <td th:text="${position.endDate}"></td>
+            <td>
+                <span th:if="${position.student != null}"
+                      th:text="${position.student.fullName}">Student Name</span>
+                <span th:if="${position.student == null}">No student assigned</span>
+            </td>
+            <td>
+                <span th:if="${position.company != null}"
+                      th:text="${position.company.companyName}">Company Name</span>
+                <span th:if="${position.company == null}">No company assigned</span>
+            </td>
+            <td>
+                <a class="evaluate-button" th:href="@{/professor/supervised_positions/evaluate/{positionId}(positionId=${position.id})}">Evaluate</a>
+
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+</body>
+</html>
