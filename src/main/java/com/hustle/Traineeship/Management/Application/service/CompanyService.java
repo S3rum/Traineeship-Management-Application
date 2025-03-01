@@ -1,6 +1,7 @@
 package com.hustle.Traineeship.Management.Application.service;
 
 import com.hustle.Traineeship.Management.Application.model.Company;
+import com.hustle.Traineeship.Management.Application.model.Evaluation;
 import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
 import java.util.List;
 
@@ -8,10 +9,13 @@ public interface CompanyService {
     Company findByUsername(String username);
     boolean companyProfileExists(Long userId);
     void updateCompanyProfile(Company updatedCompany, String username);
-    Company createCompany(Company company);
-    TraineeshipPosition announcePosition(TraineeshipPosition position);
+    void createCompany(Company company);
+    void announcePosition(TraineeshipPosition position);
     void deletePosition(Long positionId);
-    String evaluateTraineeship(Long positionId, int motivationRating, int effectivenessRating, int efficiencyRating);
+    void evaluateTraineeship(Evaluation evaluation);
+
     List<TraineeshipPosition> getAvailablePositions(Long companyId);
+
+    TraineeshipPosition getTraineeshipPositionById(Long positionId);
     // Additional methods as needed
 }
