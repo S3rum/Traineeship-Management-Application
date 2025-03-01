@@ -97,9 +97,14 @@
     <span th:text="${company.location}">Location Here</span>
   </div>
 
-
   <!-- Button to redirect to profile creation/edit page -->
   <a class="edit-button" th:href="@{/company/create_profile}">Edit Profile</a>
+
+  <!-- Button to announce a new traineeship position -->
+  <a class="edit-button" th:href="@{/company/announce_traineeship}">Announce Traineeship</a>
+
+  <!-- New button to view created traineeship positions -->
+  <a class="edit-button" th:href="@{/company/traineeships}">View My Traineeships</a>
 </div>
 
 </body>

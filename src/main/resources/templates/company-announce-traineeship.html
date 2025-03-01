@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Announce Traineeship Position</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f5f5f5; padding: 20px; }
+        .form-container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            max-width: 600px;
+            margin: auto;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+        h1 { text-align: center; margin-bottom: 1em; }
+        .form-group { margin-bottom: 15px; }
+        .form-group label { display: block; margin-bottom: 5px; font-weight: bold; }
+        .form-group input, .form-group textarea { width: 100%; padding: 8px; box-sizing: border-box; }
+        .submit-button {
+            background: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            cursor: pointer;
+            border-radius: 4px;
+            width: 100%;
+            font-size: 1em;
+        }
+        .submit-button:hover { background: #218838; }
+    </style>
+</head>
+<body>
+<div class="form-container">
+    <h1>Announce a New Traineeship Position</h1>
+    <form th:action="@{/company/announce_traineeship}" th:object="${traineeshipPosition}" method="post">
+        <div class="form-group">
+            <label for="startDate">Start Date:</label>
+            <input type="date" th:field="*{startDate}" id="startDate" required/>
+        </div>
+        <div class="form-group">
+            <label for="endDate">End Date:</label>
+            <input type="date" th:field="*{endDate}" id="endDate" required/>
+        </div>
+        <div class="form-group">
+            <label for="description">Description of Work:</label>
+            <textarea th:field="*{description}" id="description" rows="4" required></textarea>
+        </div>
+        <div class="form-group">
+            <label for="requiredSkills">Required Skills (comma-separated):</label>
+            <input type="text" th:field="*{requiredSkills}" id="requiredSkills" placeholder="e.g., Java, Spring Boot, SQL" required/>
+        </div>
+        <div class="form-group">
+            <label for="topics">Topics of Interest (comma-separated):</label>
+            <input type="text" th:field="*{topics}" id="topics" placeholder="e.g., Web Development, Cloud Computing" required/>
+        </div>
+        <button type="submit" class="submit-button">Announce Position</button>
+    </form>
+</div>
+</body>
+</html>

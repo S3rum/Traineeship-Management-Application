@@ -27,6 +27,46 @@ public class Evaluation {
     @JoinColumn(name = "position_id")
     private TraineeshipPosition traineeshipPosition;
 
+    public void setTraineeshipPosition(TraineeshipPosition position) {
+        this.traineeshipPosition = position;
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
+
+    public TraineeshipPosition getTraineeshipPosition() {
+        return traineeshipPosition;
+    }
+
+    public Integer getMotivationRating() {
+        return motivationRating;
+    }
+
+    public void setMotivationRating(Integer motivationRating) {
+        this.motivationRating = motivationRating;
+    }
+
+    public Integer getEffectivenessRating() {
+        return effectivenessRating;
+    }
+
+    public void setEffectivenessRating(Integer effectivenessRating) {
+        this.effectivenessRating = effectivenessRating;
+    }
+
+    public Integer getEfficiencyRating() {
+        return efficiencyRating;
+    }
+
+    public void setEfficiencyRating(Integer efficiencyRating) {
+        this.efficiencyRating = efficiencyRating;
+    }
+
     // Constructors, getters and setters
     // ...
 }

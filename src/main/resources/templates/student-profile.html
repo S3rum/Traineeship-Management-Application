@@ -56,12 +56,11 @@
       border: 1px solid #ccc;
       border-radius: 4px;
     }
-    .edit-button, .apply-button {
+    /* Button styles */
+    .edit-button, .apply-button, .view-button {
       display: block;
       width: 100%;
       padding: 0.8em;
-      background: #28a745;
-      color: #fff;
       border: none;
       border-radius: 4px;
       font-size: 1em;
@@ -70,8 +69,19 @@
       text-decoration: none;
       margin-top: 20px;
     }
+    .edit-button, .apply-button {
+      background: #28a745;
+      color: #fff;
+    }
     .edit-button:hover, .apply-button:hover {
       background: #218838;
+    }
+    .view-button {
+      background: #ffc107;
+      color: #fff;
+    }
+    .view-button:hover {
+      background: #e0a800;
     }
   </style>
 </head>
@@ -113,6 +123,9 @@
 
   <!-- Button to redirect to the internship selection page -->
   <a class="apply-button" th:href="@{'/student/' + ${student.id} + '/apply'}">Select Traineeship</a>
+
+  <!-- NEW: Button to redirect to the traineeship logbook page -->
+  <a class="view-button" th:href="@{'/student/' + ${student.id} + '/traineeship_logbook'}">View Traineeship Logbook</a>
 </div>
 </body>
 </html>

@@ -1,6 +1,7 @@
 package com.hustle.Traineeship.Management.Application.service;
 
 import com.hustle.Traineeship.Management.Application.model.Student;
+import com.hustle.Traineeship.Management.Application.model.TraineeshipLogBook;
 import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
 import org.springframework.stereotype.Service;
 
@@ -29,4 +30,11 @@ public interface StudentsService {
     Student findStudentById(Long studentId);
 
     List<TraineeshipPosition> getAvailableTraineeshipPositions();
+
+    List<TraineeshipLogBook> getTraineeshipLogbook(Long studentId);
+    TraineeshipLogBook addLogEntry(Long studentId, TraineeshipLogBook book);
+
+    TraineeshipLogBook findLogEntryById(Long entryId);
+
+    void deleteLogEntry(Long entryId);
 }

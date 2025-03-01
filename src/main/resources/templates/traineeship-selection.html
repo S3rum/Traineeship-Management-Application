@@ -87,9 +87,9 @@
             <td th:text="${position.requiredSkills}">Skill1, Skill2</td>
             <td th:text="${position.topics}">Topic1, Topic2</td>
             <!-- Assumes the Company entity has a 'name' field -->
-            <td th:text="${position.company.name}">Company Name</td>
+            <td th:text="${position.company.companyName}">Company Name</td>
             <td>
-                <form th:action="@{'/student/' + ${student.id} + '/apply'}" method="post">
+                <form th:action="@{/student/apply}" method="post">
                     <input type="hidden" name="positionId" th:value="${position.id}" />
                     <button type="submit" class="apply-button">Apply</button>
                 </form>
