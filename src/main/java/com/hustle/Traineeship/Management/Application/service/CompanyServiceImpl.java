@@ -81,10 +81,6 @@ public class CompanyServiceImpl implements CompanyService {
                 .orElseThrow(() -> new RuntimeException("Traineeship position not found with id: " + positionId));
     }
 
-    @Override
-    public boolean companyProfileExists(Long userId) {
-        return companyRepository.existsByUserId(userId);
-    }
 
     @Override
     public Company findByUsername(String username) {

@@ -33,32 +33,36 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
 
         User user = (User) authentication.getPrincipal();
         Role role = user.getRole();
-
+        String username = user.getUsername();
         switch (role) {
             case STUDENT:
-                if (!studentsService.studentProfileExists(user.getId())) {
-                    response.sendRedirect("/student/create_profile");
-                } else {
+                try {
+                    // Try to find the student by username - if it has a profile, this will succeed
+                    studentsService.findByUsername(username);
                     response.sendRedirect("/student/profile");
+                } catch (RuntimeException e) {
+                    // If no profile exists, redirect to create profile
+                    response.sendRedirect("/student/create_profile");
                 }
                 break;
             case COMPANY:
-                if (!companyService.companyProfileExists(user.getId())) {
-                    response.sendRedirect("/company/create_profile");
-                } else {
+                try {
+                    companyService.findByUsername(username);
                     response.sendRedirect("/company/profile");
+                } catch (RuntimeException e) {
+                    response.sendRedirect("/company/create_profile");
                 }
                 break;
             case PROFESSOR:
-                if (!professorService.professorProfileExists(user.getId())) {
-                    response.sendRedirect("/professor/create_profile");
-                } else {
+                try {
+                    professorService.findByUsername(username);
                     response.sendRedirect("/professor/profile");
+                } catch (RuntimeException e) {
+                    response.sendRedirect("/professor/create_profile");
                 }
                 break;
-
             case COMMITTEE:
-                response.sendRedirect("/committee/create_profile");
+                response.sendRedirect("/committee/dashboard");
                 break;
             default:
                 response.sendRedirect("/");

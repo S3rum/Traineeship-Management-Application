@@ -11,10 +11,6 @@ public interface ProfessorService {
     void evaluateTraineeship(Evaluation evaluation);
 
 
-
-
-    boolean professorProfileExists(Long userId);
-
     Professor findByUsername(String username);
     void updateProfessorProfile(Professor updatedProfessor, String username);
 }

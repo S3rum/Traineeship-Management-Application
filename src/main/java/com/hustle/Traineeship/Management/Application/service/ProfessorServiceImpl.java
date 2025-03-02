@@ -74,10 +74,6 @@ public class ProfessorServiceImpl implements ProfessorService {
         positionRepository.save(existingPosition);
 
     }
-    @Override
-    public boolean professorProfileExists(Long userId) {
-        return professorRepository.existsByUserId(userId);
-    }
     public Professor findByUsername(String username) {
         return professorRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Professor not found for username: " + username));

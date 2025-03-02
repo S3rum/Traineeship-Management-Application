@@ -7,7 +7,6 @@ import java.util.List;
 
 public interface CompanyService {
     Company findByUsername(String username);
-    boolean companyProfileExists(Long userId);
     void updateCompanyProfile(Company updatedCompany, String username);
     void createCompany(Company company);
     void announcePosition(TraineeshipPosition position);
