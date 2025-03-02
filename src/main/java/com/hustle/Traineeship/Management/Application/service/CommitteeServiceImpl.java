@@ -1,8 +1,6 @@
 package com.hustle.Traineeship.Management.Application.service;
 
 import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
-import com.hustle.Traineeship.Management.Application.strategy.PositionAssignmentStrategy;
-import com.hustle.Traineeship.Management.Application.strategy.SupervisorAssignmentStrategy;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
