@@ -78,10 +78,6 @@ public class StudentsServiceImpl implements StudentsService {
         return "Logbook updated";
     }
 
-    @Override
-    public boolean studentProfileExists(Long userId) {
-        return studentRepository.existsByUserId(userId);
-    }
 
     @Override
     public Student findStudentById(Long studentId) {
