@@ -71,7 +71,7 @@ public class CompanyServiceImpl implements CompanyService {
     @Override
     public List<TraineeshipPosition> getAvailablePositions(Long companyId) {
         // Retrieve positions that are not yet assigned to a student.
-        return positionRepository.findByCompanyIdAndStudentIsNull(companyId);
+        return positionRepository.findByCompanyId(companyId);
     }
 
     @Override

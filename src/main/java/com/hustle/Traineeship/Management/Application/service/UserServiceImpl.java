@@ -46,53 +46,34 @@ public class UserServiceImpl implements UserService {
         // Encode the raw password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Depending on the role, ensure that you are working with the proper subclass.
+        // Create the appropriate subclass instance with a basic profile
         User savedUser;
         switch (user.getRole()) {
             case STUDENT:
-                // If the incoming user is not already a Student instance,
-                // create one using the provided details.
-                Student student;
-                if (user instanceof Student) {
-                    student = (Student) user;
-                } else {
-                    student = new Student();
-                    student.setUsername(user.getUsername());
-                    student.setPassword(user.getPassword());
-                    student.setRole(user.getRole());
-                    // Optionally copy other fields from user if available.
-                }
+                Student student = new Student();
+                student.setUsername(user.getUsername());
+                student.setPassword(user.getPassword());
+                student.setRole(user.getRole());
+                // Set empty values for required fields to create a basic profile
+                student.setFullName("");
+                student.setUniversityId("");
                 savedUser = studentRepository.save(student);
                 break;
             case COMPANY:
-                // Similarly, create a Company instance
-                Company company;
-                if (user instanceof Company) {
-                    company = (Company) user;
-                } else {
-                    company = new Company();
-                    company.setUsername(user.getUsername());
-                    company.setPassword(user.getPassword());
-                    company.setRole(user.getRole());
-                    // Copy other company-specific fields if any.
-                }
+                Company company = new Company();
+                company.setUsername(user.getUsername());
+                company.setPassword(user.getPassword());
+                company.setRole(user.getRole());
                 savedUser = companyRepository.save(company);
                 break;
             case PROFESSOR:
-                Professor professor;
-                if (user instanceof Professor) {
-                    professor = (Professor) user;
-                } else {
-                    professor = new Professor();
-                    professor.setUsername(user.getUsername());
-                    professor.setPassword(user.getPassword());
-                    professor.setRole(user.getRole());
-                    // Copy additional fields
-                }
+                Professor professor = new Professor();
+                professor.setUsername(user.getUsername());
+                professor.setPassword(user.getPassword());
+                professor.setRole(user.getRole());
                 savedUser = professorRepository.save(professor);
                 break;
             default:
-                // For any other role, save as a generic user
                 savedUser = userRepository.save(user);
                 break;
         }
