@@ -23,16 +23,8 @@ public class CompanyController {
 
     // Display the company's profile creation form.
     @GetMapping("/create_profile")
-    public String showProfileCreationForm(Model model, Principal principal) {
-        // Try to load the existing company profile.
-        // (If not found, you might show an empty form for a new profile.)
-        Company company;
-        try {
-            company = companyService.findByUsername(principal.getName());
-        } catch (RuntimeException ex) {
-            // If not found, create a new instance.
-            company = new Company();
-        }
+    public String showProfileForm(Model model, Principal principal) {
+        Company company = companyService.findByUsername(principal.getName());
         model.addAttribute("company", company);
         return "company-profile-creation";
     }
@@ -40,14 +32,7 @@ public class CompanyController {
     // Process the company profile form submission.
     @PostMapping("/create_profile")
     public String createOrUpdateProfile(@ModelAttribute("company") Company company, Principal principal) {
-        // If a profile exists, update it; otherwise, create a new company profile.
-        try {
-            // Attempt to update the profile
-            companyService.updateCompanyProfile(company, principal.getName());
-        } catch (RuntimeException ex) {
-            // If not found, create a new profile
-            companyService.createCompany(company);
-        }
+        companyService.updateCompanyProfile(company, principal.getName());
         return "redirect:/company/profile";
     }
 
@@ -90,7 +75,7 @@ public class CompanyController {
     // POST endpoint to delete a traineeship position.
     @PostMapping("/traineeships/{positionId}/delete")
     public String deleteTraineeshipPosition(@PathVariable Long positionId, Principal principal) {
-        Company company = companyService.findByUsername(principal.getName());
+        Company  company = companyService.findByUsername(principal.getName());
         // Optionally, you can perform an authorization check inside the service as well.
         // Here, we assume that the service's deletePosition method performs the check.
         companyService.deletePosition(positionId);

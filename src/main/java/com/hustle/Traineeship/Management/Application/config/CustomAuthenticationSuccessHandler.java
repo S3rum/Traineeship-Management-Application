@@ -75,7 +75,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
                 }
                 break;
             case COMMITTEE:
-                response.sendRedirect("/committee/dashboard");
+                response.sendRedirect("/committee/profile");
                 break;
             default:
                 response.sendRedirect("/");

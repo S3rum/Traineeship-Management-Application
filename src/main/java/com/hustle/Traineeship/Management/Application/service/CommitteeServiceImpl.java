@@ -1,10 +1,14 @@
 package com.hustle.Traineeship.Management.Application.service;
 
 import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
+import com.hustle.Traineeship.Management.Application.model.Student;
+import com.hustle.Traineeship.Management.Application.repos.TraineeshipPositionRepository;
 import org.springframework.stereotype.Service;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class CommitteeServiceImpl implements CommitteeService {
@@ -12,10 +16,16 @@ public class CommitteeServiceImpl implements CommitteeService {
     // Inject the necessary repositories and services
     // For the strategy pattern, you might have a factory that returns the correct strategy based on the parameter.
 
+    @Autowired
+    private TraineeshipPositionRepository traineeshipPositionRepository;
+
     @Override
-    public List<?> getApplicants() {
-        // Return a list of student applications.
-        return Collections.emptyList();
+    public List<Student> getApplicants() {
+        // Find all positions with a non-null student (i.e., applied)
+        return traineeshipPositionRepository.findAll().stream()
+                .map(TraineeshipPosition::getStudent)
+                .filter(Objects::nonNull)
+                .toList();
     }
 
     @Override

@@ -37,7 +37,7 @@ public class ProfessorController {
     @PostMapping("/create_profile")
     public String createProfile(@ModelAttribute("professor") Professor professor, Principal principal) {
         // Ensure that the username matches the logged-in user
-       professorService.updateProfessorProfile(professor, principal.getName());
+        professorService.updateProfessorProfile(professor, principal.getName());
 
         return "redirect:/professor/profile";
     }

@@ -1,13 +1,7 @@
 package com.hustle.Traineeship.Management.Application.service;
 
-import com.hustle.Traineeship.Management.Application.model.Company;
-import com.hustle.Traineeship.Management.Application.model.Professor;
-import com.hustle.Traineeship.Management.Application.model.Student;
-import com.hustle.Traineeship.Management.Application.model.User;
-import com.hustle.Traineeship.Management.Application.repos.CompanyRepository;
-import com.hustle.Traineeship.Management.Application.repos.ProfessorRepository;
-import com.hustle.Traineeship.Management.Application.repos.StudentRepository;
-import com.hustle.Traineeship.Management.Application.repos.UserRepository;
+import com.hustle.Traineeship.Management.Application.model.*;
+import com.hustle.Traineeship.Management.Application.repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -32,6 +26,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private ProfessorRepository professorRepository;
 
+    @Autowired
+    private CommitteeRepository committeeRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -72,6 +68,13 @@ public class UserServiceImpl implements UserService {
                 professor.setPassword(user.getPassword());
                 professor.setRole(user.getRole());
                 savedUser = professorRepository.save(professor);
+                break;
+            case COMMITTEE:
+                Committee committee = new Committee();
+                committee.setUsername(user.getUsername());
+                committee.setPassword(user.getPassword());
+                committee.setRole(user.getRole());
+                savedUser = committeeRepository.save(committee);
                 break;
             default:
                 savedUser = userRepository.save(user);
