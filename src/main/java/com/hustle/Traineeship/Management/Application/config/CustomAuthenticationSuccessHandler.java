@@ -41,7 +41,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
             case STUDENT:
                 try {
                     Student student = studentsService.findByUsername(username);
-                    if (student.getFullName() == null) {
+                    if (student.getFullName() == null || student.getFullName().isEmpty()) {
                         response.sendRedirect("/student/create_profile");
                     } else {
                         response.sendRedirect("/student/profile");

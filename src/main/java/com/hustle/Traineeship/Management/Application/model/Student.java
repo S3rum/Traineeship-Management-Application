@@ -39,6 +39,7 @@ public class Student extends User {
         this.interests = interests;
         this.skills = skills;
         this.preferredLocation = preferredLocation;
+        this.setUniversityIdFromId();
     }
 
     // Getters and Setters
@@ -89,5 +90,13 @@ public class Student extends User {
 
     public void setTraineeshipPosition(TraineeshipPosition traineeshipPosition) {
         this.traineeshipPosition = traineeshipPosition;
+    }
+
+    // Method to set studentId after persisting (when ID is generated)
+    @PostPersist
+    public void setUniversityIdFromId() {
+        if (this.getId() != null) { // getId() is from the User superclass
+            this.universityId = String.valueOf(this.getId() + 4000);
+        }
     }
 }

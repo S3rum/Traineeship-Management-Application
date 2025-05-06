@@ -44,6 +44,7 @@ public class StudentsServiceImpl implements StudentsService {
         existingStudent.setInterests(updatedStudent.getInterests());
         existingStudent.setSkills(updatedStudent.getSkills());
         existingStudent.setPreferredLocation(updatedStudent.getPreferredLocation());
+        existingStudent.setUniversityIdFromId();
 
         return studentRepository.save(existingStudent);
     }
