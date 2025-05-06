@@ -84,6 +84,17 @@ public class ProfessorServiceImpl implements ProfessorService {
         return positionRepository.findById(positionId)
                 .orElseThrow(() -> new RuntimeException("TraineeshipPosition not found for ID: " + positionId));
     }
+
+    @Override
+    public List<Professor> getAllProfessors() {
+        return professorRepository.findAll();
+    }
+
+    @Override
+    public Professor findProfessorById(Long professorId) {
+        return professorRepository.findById(professorId)
+                .orElseThrow(() -> new RuntimeException("Professor not found for ID: " + professorId));
+    }
 }
 
 

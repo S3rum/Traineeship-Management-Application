@@ -3,9 +3,13 @@ package com.hustle.Traineeship.Management.Application.controllers;
 import com.hustle.Traineeship.Management.Application.model.Student;
 import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
 import com.hustle.Traineeship.Management.Application.model.Committee;
+import com.hustle.Traineeship.Management.Application.model.Evaluation;
 import com.hustle.Traineeship.Management.Application.service.CommitteeService;
 import com.hustle.Traineeship.Management.Application.service.StudentsService;
+import com.hustle.Traineeship.Management.Application.service.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +27,9 @@ public class CommitteeController {
 
     @Autowired
     private StudentsService studentsService;
+
+    @Autowired
+    private ProfessorService professorService;
 
     @GetMapping("/applicants")
     public String viewApplicants(Model model) {
@@ -115,27 +122,75 @@ public class CommitteeController {
         }
     }
 
-    @PostMapping("/assign-supervisor")
-    public String assignSupervisor(@RequestParam Long positionId,
-                                   @RequestParam String strategy) {
-        return committeeService.assignSupervisor(positionId, strategy);
-    }
-
     @GetMapping("/in-progress")
-    public List<?> listInProgressTraineeships() {
+    @ResponseBody
+    public List<TraineeshipPosition> listInProgressTraineeships() {
         return committeeService.getInProgressTraineeships();
     }
 
     @PostMapping("/finalize")
     public String finalizeTraineeship(@RequestParam Long positionId,
-                                      @RequestParam boolean pass) {
-        return committeeService.finalizeTraineeship(positionId, pass);
+                                      @RequestParam boolean pass,
+                                      RedirectAttributes redirectAttributes) {
+        try {
+            String message = committeeService.finalizeTraineeship(positionId, pass);
+            redirectAttributes.addFlashAttribute("successMessage", message);
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("errorMessage", "Error: " + e.getMessage());
+        }
+        return "redirect:/committee/fully-assigned";
+    }
+
+    @GetMapping("/traineeships/{positionId}/evaluation")
+    @ResponseBody
+    public ResponseEntity<?> getTraineeshipEvaluation(@PathVariable Long positionId) {
+        try {
+            Evaluation evaluation = committeeService.getEvaluationForTraineeship(positionId);
+            if (evaluation != null) {
+                return ResponseEntity.ok(evaluation);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Evaluation not found for traineeship ID: " + positionId);
+            }
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
+        }
     }
 
     @GetMapping("/profile")
     public String viewProfile(Model model, Principal principal) {
         Committee committee = committeeService.findByUsername(principal.getName());
         model.addAttribute("committee", committee);
+        List<TraineeshipPosition> fullyAssignedTraineeships = committeeService.getFullyAssignedTraineeships();
+        model.addAttribute("fullyAssignedTraineeships", fullyAssignedTraineeships);
         return "committee-profile";
+    }
+
+    @GetMapping("/fully-assigned")
+    public String viewFullyAssignedTraineeships(Model model) {
+        List<TraineeshipPosition> fullyAssignedTraineeships = committeeService.getFullyAssignedTraineeships();
+        model.addAttribute("fullyAssignedTraineeships", fullyAssignedTraineeships);
+        return "committee-fully-assigned-list";
+    }
+
+    @GetMapping("/assign-professors")
+    public String showAssignProfessorsPage(Model model) {
+        List<TraineeshipPosition> traineeships = committeeService.getInProgressTraineeships();
+        List<com.hustle.Traineeship.Management.Application.model.Professor> professors = professorService.getAllProfessors();
+        model.addAttribute("traineeships", traineeships);
+        model.addAttribute("professors", professors);
+        return "committee/assign-professors";
+    }
+
+    @PostMapping("/do-assign-supervisor")
+    public String doAssignSupervisor(@RequestParam Long traineeshipId,
+                                     @RequestParam Long professorId,
+                                     RedirectAttributes redirectAttributes) {
+        try {
+            String message = committeeService.assignSupervisor(traineeshipId, professorId);
+            redirectAttributes.addFlashAttribute("message", message);
+        } catch (RuntimeException e) {
+            redirectAttributes.addFlashAttribute("message", "Error: " + e.getMessage());
+        }
+        return "redirect:/committee/assign-professors";
     }
 }

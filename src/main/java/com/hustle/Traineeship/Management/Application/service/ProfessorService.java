@@ -10,6 +10,9 @@ public interface ProfessorService {
     List<TraineeshipPosition> getSupervisedPositions(Long professorId);
     void evaluateTraineeship(Evaluation evaluation);
 
+    List<Professor> getAllProfessors();
+
+    Professor findProfessorById(Long professorId);
 
     Professor findByUsername(String username);
     void updateProfessorProfile(Professor updatedProfessor, String username);

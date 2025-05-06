@@ -43,5 +43,12 @@ public class Professor extends User {
         this.interests = interests;
     }
 
-    // Optionally, getters and setters for supervisedPositions if needed
+    // Getter and Setter for supervisedPositions
+    public List<TraineeshipPosition> getSupervisedPositions() {
+        return supervisedPositions;
+    }
+
+    public void setSupervisedPositions(List<TraineeshipPosition> supervisedPositions) {
+        this.supervisedPositions = supervisedPositions;
+    }
 }

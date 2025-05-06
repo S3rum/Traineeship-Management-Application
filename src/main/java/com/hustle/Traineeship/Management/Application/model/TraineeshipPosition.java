@@ -40,6 +40,10 @@ public class TraineeshipPosition {
     @OneToOne(mappedBy = "traineeshipPosition", cascade = CascadeType.ALL)
     private Evaluation evaluation;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = true) // Or false if a default is always set
+    private TraineeshipStatus status;
+
     public Long getId() {
         return id;
     }
@@ -118,5 +122,13 @@ public class TraineeshipPosition {
 
     public void setEvaluation(Evaluation evaluation) {
         this.evaluation = evaluation;
+    }
+
+    public TraineeshipStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TraineeshipStatus status) {
+        this.status = status;
     }
 }
