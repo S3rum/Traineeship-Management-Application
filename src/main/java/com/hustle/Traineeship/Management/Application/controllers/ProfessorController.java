@@ -5,6 +5,7 @@ import com.hustle.Traineeship.Management.Application.model.Professor;
 import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
 import com.hustle.Traineeship.Management.Application.service.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -62,11 +63,13 @@ public class ProfessorController {
         return "professor-supervised-positions";
     }
     @GetMapping("/supervised_positions/evaluate/{positionId}")
-    public String showEvaluationForm(@PathVariable Long positionId, Model model) {
-
-        // Retrieve the traineeship position
+    public String showEvaluationForm(@PathVariable Long positionId, Model model, Principal principal) {
+        Professor authenticatedProfessor = professorService.findByUsername(principal.getName());
         TraineeshipPosition position = professorService.findTraineeshipPositionById(positionId);
 
+        if (position == null || position.getSupervisor() == null || !position.getSupervisor().getId().equals(authenticatedProfessor.getId())) {
+            throw new AccessDeniedException("You are not authorized to evaluate this traineeship position.");
+        }
 
         // If an Evaluation object already exists, load it; otherwise create a new one
         Evaluation evaluation = position.getEvaluation();
@@ -81,12 +84,14 @@ public class ProfessorController {
     }
     @PostMapping("/traineeships/{positionId}/evaluate")
     public String submitEvaluation(@PathVariable Long positionId,
-                                   @ModelAttribute("evaluation") Evaluation evaluation) {
-        // You may perform an authorization check here to ensure the professor is allowed to evaluate.
-
-        // Ensure that the evaluation is associated with the correct position
+                                   @ModelAttribute("evaluation") Evaluation evaluation,
+                                   Principal principal) {
+        Professor authenticatedProfessor = professorService.findByUsername(principal.getName());
         TraineeshipPosition position = professorService.findTraineeshipPositionById(positionId);
-        evaluation.setTraineeshipPosition(position);
+
+        if (position == null || position.getSupervisor() == null || !position.getSupervisor().getId().equals(authenticatedProfessor.getId())) {
+            throw new AccessDeniedException("You are not authorized to submit an evaluation for this traineeship position.");
+        }
 
         // Call the new evaluation method in the service layer
         professorService.evaluateTraineeship(evaluation);

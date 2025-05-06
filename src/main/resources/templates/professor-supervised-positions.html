@@ -52,6 +52,21 @@
         .signout-container form button:hover {
             background-color: #0056b3;
         }
+        .back-button {
+            display: inline-block;
+            padding: 8px 12px;
+            background-color: #6c757d; /* Secondary button color */
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            font-size: 0.9em;
+            cursor: pointer;
+            margin-bottom: 1em; /* Add some space below it */
+            margin-left: 10px; /* Align with sign out or adjust as needed */
+        }
+        .back-button:hover {
+            background-color: #5a6268;
+        }
         .evaluate-button {
             display: inline-block;
             padding: 8px 12px;
@@ -69,12 +84,17 @@
 </head>
 <body>
 
-<!-- Sign-out button -->
-<div class="signout-container">
-    <form th:action="@{/logout}" method="post">
-        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-        <button type="submit">Sign Out</button>
-    </form>
+<!-- Navigation buttons container -->
+<div style="padding: 10px;"> <!-- Simple container for top buttons -->
+    <!-- Sign-out button -->
+    <div class="signout-container" style="display: inline-block; position: static; vertical-align: middle;">
+        <form th:action="@{/logout}" method="post" style="display: inline;">
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            <button type="submit">Sign Out</button>
+        </form>
+    </div>
+    <!-- Back to Profile button -->
+    <a th:href="@{/professor/profile}" class="back-button" style="display: inline-block; vertical-align: middle; margin-left: 10px;">Back to Profile</a>
 </div>
 
 <div class="container">

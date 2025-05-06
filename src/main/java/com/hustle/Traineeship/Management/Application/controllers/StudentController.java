@@ -2,9 +2,9 @@ package com.hustle.Traineeship.Management.Application.controllers;
 
 import com.hustle.Traineeship.Management.Application.model.Student;
 import com.hustle.Traineeship.Management.Application.model.TraineeshipLogBook;
-import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
 import com.hustle.Traineeship.Management.Application.service.StudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -45,6 +45,10 @@ public class StudentController {
 
     @GetMapping("/{studentId}/apply")
     public String showTraineeshipSelection(@PathVariable Long studentId, Principal principal, RedirectAttributes redirectAttributes, Model model) {
+        Student authenticatedStudent = studentsService.findByUsername(principal.getName());
+        if (!authenticatedStudent.getId().equals(studentId)) {
+            throw new AccessDeniedException("You are not authorized to perform this action for the given student ID.");
+        }
         studentsService.setTraineeshipId(studentId);
         redirectAttributes.addFlashAttribute("successMessage", "Your traineeship application has been submitted.");
         return "redirect:/student/profile";
@@ -63,6 +67,10 @@ public class StudentController {
     // GET endpoint for displaying the traineeship logbook.
     @GetMapping("/{studentId}/traineeship_logbook")
     public String showTraineeshipLogbook(@PathVariable("studentId") Long studentId, Model model, Principal principal) {
+        Student authenticatedStudent = studentsService.findByUsername(principal.getName());
+        if (!authenticatedStudent.getId().equals(studentId)) {
+            throw new AccessDeniedException("You are not authorized to view this logbook.");
+        }
         Student student = studentsService.findStudentById(studentId);
         model.addAttribute("student", student);
 
@@ -80,6 +88,10 @@ public class StudentController {
     public String addLogEntry(@PathVariable("studentId") Long studentId,
                               @ModelAttribute("logEntry") TraineeshipLogBook logEntry,
                               Principal principal) {
+        Student authenticatedStudent = studentsService.findByUsername(principal.getName());
+        if (!authenticatedStudent.getId().equals(studentId)) {
+            throw new AccessDeniedException("You are not authorized to add a log entry for this student.");
+        }
         // Optionally, verify that principal corresponds to studentId.
         studentsService.addLogEntry(studentId, logEntry);
         return "redirect:/student/" + studentId + "/traineeship_logbook";
@@ -91,6 +103,10 @@ public class StudentController {
                                    @PathVariable Long entryId,
                                    Model model,
                                    Principal principal) {
+        Student authenticatedStudent = studentsService.findByUsername(principal.getName());
+        if (!authenticatedStudent.getId().equals(studentId)) {
+            throw new AccessDeniedException("You are not authorized to edit this log entry.");
+        }
         // Optionally verify that the current user is allowed to edit this entry.
         Student student = studentsService.findStudentById(studentId);
         TraineeshipLogBook logEntry = studentsService.findLogEntryById(entryId);
@@ -105,6 +121,10 @@ public class StudentController {
                                  @PathVariable Long entryId,
                                  @ModelAttribute("logEntry") TraineeshipLogBook updatedEntry,
                                  Principal principal) {
+        Student authenticatedStudent = studentsService.findByUsername(principal.getName());
+        if (!authenticatedStudent.getId().equals(studentId)) {
+            throw new AccessDeniedException("You are not authorized to update this log entry.");
+        }
         // Optionally verify that the current user is allowed to update this entry.
         TraineeshipLogBook existingEntry = studentsService.findLogEntryById(entryId);
         existingEntry.setStartDate(updatedEntry.getStartDate());
@@ -120,6 +140,10 @@ public class StudentController {
     public String deleteLogEntry(@PathVariable Long studentId,
                                  @PathVariable Long entryId,
                                  Principal principal) {
+        Student authenticatedStudent = studentsService.findByUsername(principal.getName());
+        if (!authenticatedStudent.getId().equals(studentId)) {
+            throw new AccessDeniedException("You are not authorized to delete this log entry.");
+        }
         // Optionally verify that the current user is allowed to delete this entry.
         studentsService.deleteLogEntry(entryId);
         return "redirect:/student/" + studentId + "/traineeship_logbook";

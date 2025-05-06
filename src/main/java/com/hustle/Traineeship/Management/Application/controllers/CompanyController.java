@@ -5,6 +5,7 @@ import com.hustle.Traineeship.Management.Application.model.Evaluation;
 import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
 import com.hustle.Traineeship.Management.Application.service.CompanyService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -75,9 +76,14 @@ public class CompanyController {
     // POST endpoint to delete a traineeship position.
     @PostMapping("/traineeships/{positionId}/delete")
     public String deleteTraineeshipPosition(@PathVariable Long positionId, Principal principal) {
-        Company  company = companyService.findByUsername(principal.getName());
+        Company company = companyService.findByUsername(principal.getName());
+        TraineeshipPosition position = companyService.getTraineeshipPositionById(positionId);
+
+        if (position == null || position.getCompany() == null || !position.getCompany().getId().equals(company.getId())) {
+            throw new AccessDeniedException("You are not authorized to delete this traineeship position.");
+        }
+
         // Optionally, you can perform an authorization check inside the service as well.
-        // Here, we assume that the service's deletePosition method performs the check.
         companyService.deletePosition(positionId);
         return "redirect:/company/traineeships";
     }
@@ -88,8 +94,8 @@ public class CompanyController {
         Company company = companyService.findByUsername(principal.getName());
         TraineeshipPosition position = companyService.getTraineeshipPositionById(positionId);
         // Check that the position belongs to the logged-in company.
-        if (!position.getCompany().getId().equals(company.getId())) {
-            throw new RuntimeException("Unauthorized to evaluate this traineeship");
+        if (position == null || position.getCompany() == null || !position.getCompany().getId().equals(company.getId())) {
+            throw new AccessDeniedException("Unauthorized to evaluate this traineeship");
         }
         Evaluation evaluation = position.getEvaluation();
         if (evaluation == null) {
@@ -107,8 +113,8 @@ public class CompanyController {
                                    Principal principal) {
         Company company = companyService.findByUsername(principal.getName());
         TraineeshipPosition position = companyService.getTraineeshipPositionById(positionId);
-        if (!position.getCompany().getId().equals(company.getId())) {
-            throw new RuntimeException("Unauthorized to evaluate this traineeship");
+        if (position == null || position.getCompany() == null || !position.getCompany().getId().equals(company.getId())) {
+            throw new AccessDeniedException("Unauthorized to evaluate this traineeship");
         }
         evaluationForm.setTraineeshipPosition(position);
         companyService.evaluateTraineeship(evaluationForm);
