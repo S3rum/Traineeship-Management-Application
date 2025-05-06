@@ -3,7 +3,6 @@ package com.hustle.Traineeship.Management.Application.controllers;
 import com.hustle.Traineeship.Management.Application.model.Student;
 import com.hustle.Traineeship.Management.Application.model.TraineeshipLogBook;
 import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
-import com.hustle.Traineeship.Management.Application.repos.TraineeshipPositionRepository;
 import com.hustle.Traineeship.Management.Application.service.StudentsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,9 +18,6 @@ public class StudentController {
 
     @Autowired
     private StudentsService studentsService;
-
-    @Autowired
-    private TraineeshipPositionRepository traineeshipPositionRepository;
 
     // Display the student's profile creation form.
     @GetMapping("/create_profile")

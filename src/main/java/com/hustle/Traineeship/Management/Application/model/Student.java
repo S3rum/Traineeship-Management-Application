@@ -9,7 +9,7 @@ public class Student extends User {
 
     private String fullName;
 
-    @Column(unique = true)
+    @Column(unique = true, nullable = true)
     private String universityId;
 
     @ElementCollection

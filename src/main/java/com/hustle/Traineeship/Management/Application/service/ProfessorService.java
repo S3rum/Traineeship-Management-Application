@@ -13,4 +13,5 @@ public interface ProfessorService {
 
     Professor findByUsername(String username);
     void updateProfessorProfile(Professor updatedProfessor, String username);
+    TraineeshipPosition findTraineeshipPositionById(Long positionId);
 }

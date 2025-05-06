@@ -4,7 +4,6 @@ import com.hustle.Traineeship.Management.Application.model.Student;
 import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
 import com.hustle.Traineeship.Management.Application.model.Committee;
 import com.hustle.Traineeship.Management.Application.service.CommitteeService;
-import com.hustle.Traineeship.Management.Application.repos.CommitteeRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,9 +18,6 @@ public class CommitteeController {
 
     @Autowired
     private CommitteeService committeeService;
-
-    @Autowired
-    private CommitteeRepository committeeRepository;
 
     @GetMapping("/applicants")
     public String viewApplicants(Model model) {
@@ -61,8 +57,7 @@ public class CommitteeController {
 
     @GetMapping("/profile")
     public String viewProfile(Model model, Principal principal) {
-        Committee committee = committeeRepository.findByUsername(principal.getName())
-            .orElseThrow(() -> new RuntimeException("Committee not found for username: " + principal.getName()));
+        Committee committee = committeeService.findByUsername(principal.getName());
         model.addAttribute("committee", committee);
         return "committee-profile";
     }

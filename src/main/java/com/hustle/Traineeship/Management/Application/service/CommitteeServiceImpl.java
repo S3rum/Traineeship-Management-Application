@@ -2,6 +2,8 @@ package com.hustle.Traineeship.Management.Application.service;
 
 import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
 import com.hustle.Traineeship.Management.Application.model.Student;
+import com.hustle.Traineeship.Management.Application.model.Committee;
+import com.hustle.Traineeship.Management.Application.repos.CommitteeRepository;
 import com.hustle.Traineeship.Management.Application.repos.TraineeshipPositionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,9 @@ public class CommitteeServiceImpl implements CommitteeService {
 
     @Autowired
     private TraineeshipPositionRepository traineeshipPositionRepository;
+
+    @Autowired
+    private CommitteeRepository committeeRepository;
 
     @Override
     public List<Student> getApplicants() {
@@ -58,5 +63,11 @@ public class CommitteeServiceImpl implements CommitteeService {
     public String finalizeTraineeship(Long positionId, boolean pass) {
         // Complete the traineeship process with a pass or fail status.
         return "Traineeship finalized";
+    }
+
+    @Override
+    public Committee findByUsername(String username) {
+        return committeeRepository.findByUsername(username)
+                .orElseThrow(() -> new RuntimeException("Committee not found for username: " + username));
     }
 }

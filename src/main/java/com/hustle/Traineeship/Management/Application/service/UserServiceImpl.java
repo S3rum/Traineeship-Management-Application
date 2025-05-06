@@ -52,7 +52,7 @@ public class UserServiceImpl implements UserService {
                 student.setRole(user.getRole());
                 // Set empty values for required fields to create a basic profile
                 student.setFullName("");
-                student.setUniversityId("");
+                student.setUniversityId(null);
                 savedUser = studentRepository.save(student);
                 break;
             case COMPANY:

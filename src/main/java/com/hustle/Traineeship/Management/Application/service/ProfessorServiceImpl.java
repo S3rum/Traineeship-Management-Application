@@ -78,6 +78,12 @@ public class ProfessorServiceImpl implements ProfessorService {
         return professorRepository.findByUsername(username)
                 .orElseThrow(() -> new RuntimeException("Professor not found for username: " + username));
     }
+
+    @Override
+    public TraineeshipPosition findTraineeshipPositionById(Long positionId) {
+        return positionRepository.findById(positionId)
+                .orElseThrow(() -> new RuntimeException("TraineeshipPosition not found for ID: " + positionId));
+    }
 }
 
 

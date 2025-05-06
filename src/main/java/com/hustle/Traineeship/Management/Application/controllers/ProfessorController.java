@@ -3,7 +3,6 @@ package com.hustle.Traineeship.Management.Application.controllers;
 import com.hustle.Traineeship.Management.Application.model.Evaluation;
 import com.hustle.Traineeship.Management.Application.model.Professor;
 import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
-import com.hustle.Traineeship.Management.Application.repos.TraineeshipPositionRepository;
 import com.hustle.Traineeship.Management.Application.service.ProfessorService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -19,9 +18,6 @@ public class ProfessorController {
 
     @Autowired
     private ProfessorService professorService;
-
-    @Autowired
-    private TraineeshipPositionRepository traineeshipPositionRepository;
 
 
     // Display the professor's profile creation form.
@@ -69,8 +65,7 @@ public class ProfessorController {
     public String showEvaluationForm(@PathVariable Long positionId, Model model) {
 
         // Retrieve the traineeship position
-        TraineeshipPosition position = traineeshipPositionRepository.findById(positionId)
-                .orElseThrow(() -> new RuntimeException("Traineeship position not found"));
+        TraineeshipPosition position = professorService.findTraineeshipPositionById(positionId);
 
 
         // If an Evaluation object already exists, load it; otherwise create a new one
@@ -90,8 +85,7 @@ public class ProfessorController {
         // You may perform an authorization check here to ensure the professor is allowed to evaluate.
 
         // Ensure that the evaluation is associated with the correct position
-        TraineeshipPosition position = traineeshipPositionRepository.findById(positionId)
-                .orElseThrow(() -> new RuntimeException("Traineeship position not found"));
+        TraineeshipPosition position = professorService.findTraineeshipPositionById(positionId);
         evaluation.setTraineeshipPosition(position);
 
         // Call the new evaluation method in the service layer
