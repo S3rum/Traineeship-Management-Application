@@ -39,6 +39,15 @@ public class CommitteeServiceImpl implements CommitteeService {
     }
 
     @Override
+    public Student getApplicantByUniversityId(String universityId) {
+        // Assuming StudentRepository has a method to find by universityId.
+        // If universityId is unique, this should return a single Student or null/Optional.empty().
+        // If universityId is not the primary key, ensure the repository method handles it correctly.
+        return studentRepository.findByUniversityId(universityId)
+                .orElse(null); // Or throw an exception if a student must always be found
+    }
+
+    @Override
     public List<TraineeshipPosition> searchPositionsForStudent(Long studentId, String strategy) {
         Student student = studentRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found with id: " + studentId));
@@ -97,13 +106,13 @@ public class CommitteeServiceImpl implements CommitteeService {
             return "Error: Student " + student.getUsername() + " is already assigned to position ID " + student.getTraineeshipPosition().getId();
         }
 
-        // Assign student to position
+        // Assign student to position and position ID to student
         position.setStudent(student);
-        // Optionally, set the position for the student as well if the relationship is managed bidirectionally
-        // and you want the in-memory objects to be consistent immediately.
-        // student.setTraineeshipPosition(position); // The @OneToOne mapping in Student is mappedBy, so this is not strictly needed for DB persistence if Position is the owner.
+        student.setTraineeshipPosition(position); // Keep both sides of the relationship in sync in memory
+        student.setTraineeshipId(position.getId());
 
-        traineeshipPositionRepository.save(position);
+        traineeshipPositionRepository.save(position); // Position is the owner, save it first or ensure cascading is correct
+        studentRepository.save(student); // Save student to persist traineeshipId and traineeshipPosition reference
 
         return "Traineeship position ID " + positionId + " successfully assigned to student " + student.getUsername() + ".";
     }

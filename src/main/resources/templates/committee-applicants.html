@@ -63,6 +63,19 @@
         .back-button:hover {
             background: #0056b3;
         }
+        .details-button {
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .details-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -83,6 +96,7 @@
             <th>Interests</th>
             <th>Skills</th>
             <th>Preferred Location</th>
+            <th>Actions</th>
         </tr>
         </thead>
         <tbody>
@@ -92,9 +106,10 @@
             <td th:text="${#strings.arrayJoin(applicant.interests.toArray(), ', ')}">Interests</td>
             <td th:text="${#strings.arrayJoin(applicant.skills.toArray(), ', ')}">Skills</td>
             <td th:text="${applicant.preferredLocation}">Preferred Location</td>
+            <td><a th:href="@{/committee/applicant/{id}/details(id=${applicant.universityId})}" class="details-button">Details</a></td>
         </tr>
         <tr th:if="${#lists.isEmpty(applicants)}">
-            <td colspan="5" style="text-align:center;">No applicants found.</td>
+            <td colspan="6" style="text-align:center;">No applicants found.</td>
         </tr>
         </tbody>
     </table>

@@ -7,6 +7,7 @@ import java.util.List;
 
 public interface CommitteeService {
     List<Student> getApplicants();
+    Student getApplicantByUniversityId(String universityId);
     List<TraineeshipPosition> searchPositionsForStudent(Long studentId, String strategy);
     String assignTraineeship(Long studentId, Long positionId);
     String assignSupervisor(Long positionId, String strategy);
