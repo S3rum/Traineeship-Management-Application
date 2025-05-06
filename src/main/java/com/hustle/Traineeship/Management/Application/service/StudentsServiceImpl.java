@@ -122,4 +122,22 @@ public class StudentsServiceImpl implements StudentsService {
         return logBookRepository.save(entry);
     }
 
+    @Override
+    public Student findStudentByTraineeshipId(Long traineeshipId) {
+        return studentRepository.findByTraineeshipId(traineeshipId)
+                .orElseThrow(() -> new RuntimeException("Student not found for traineeshipId: " + traineeshipId));
+    }
+
+    @Override
+    public List<Student> findStudentsWithoutTraineeship() {
+        return studentRepository.findByTraineeshipIdIs(0L);
+    }
+
+    @Override
+    public void setTraineeshipId(Long studentId) {
+        Student student = findStudentById(studentId);
+        student.setTraineeshipPosition(null);
+        student.setTraineeshipId(0L); // Use 0L for long literal consistency
+        studentRepository.save(student);
+    }
 }

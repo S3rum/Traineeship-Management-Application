@@ -24,6 +24,9 @@ public class Student extends User {
     @OneToOne(mappedBy = "student")
     private TraineeshipPosition traineeshipPosition;
 
+    @Column(name = "traineeship_id")
+    private Long traineeshipId;
+
     // Constructors
 
     public Student() {
@@ -90,6 +93,14 @@ public class Student extends User {
 
     public void setTraineeshipPosition(TraineeshipPosition traineeshipPosition) {
         this.traineeshipPosition = traineeshipPosition;
+    }
+
+    public Long getTraineeshipId() {
+        return traineeshipId;
+    }
+
+    public void setTraineeshipId(Long traineeshipId) {
+        this.traineeshipId = traineeshipId;
     }
 
     // Method to set studentId after persisting (when ID is generated)

@@ -37,4 +37,10 @@ public interface StudentsService {
     void deleteLogEntry(Long entryId);
 
     TraineeshipLogBook updateLogEntry(Long studentId, TraineeshipLogBook existingEntry);
+
+    Student findStudentByTraineeshipId(Long traineeshipId);
+
+    List<Student> findStudentsWithoutTraineeship();
+
+    void setTraineeshipId(Long studentId);
 }

@@ -4,6 +4,7 @@ import com.hustle.Traineeship.Management.Application.model.TraineeshipPosition;
 import com.hustle.Traineeship.Management.Application.model.Student;
 import com.hustle.Traineeship.Management.Application.model.Committee;
 import com.hustle.Traineeship.Management.Application.repos.CommitteeRepository;
+import com.hustle.Traineeship.Management.Application.repos.StudentRepository;
 import com.hustle.Traineeship.Management.Application.repos.TraineeshipPositionRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collections;
 import java.util.List;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 public class CommitteeServiceImpl implements CommitteeService {
@@ -22,29 +24,88 @@ public class CommitteeServiceImpl implements CommitteeService {
     private TraineeshipPositionRepository traineeshipPositionRepository;
 
     @Autowired
+    private StudentRepository studentRepository;
+
+    @Autowired
     private CommitteeRepository committeeRepository;
+
+    @Autowired
+    private StudentsService studentsService;
 
     @Override
     public List<Student> getApplicants() {
-        // Find all positions with a non-null student (i.e., applied)
-        return traineeshipPositionRepository.findAll().stream()
-                .map(TraineeshipPosition::getStudent)
-                .filter(Objects::nonNull)
-                .toList();
+        // Returns students who do not have an assigned traineeship
+        return studentsService.findStudentsWithoutTraineeship();
     }
 
     @Override
     public List<TraineeshipPosition> searchPositionsForStudent(Long studentId, String strategy) {
-        // Based on the strategy parameter (e.g., "interests", "location", "combined")
-        // instantiate and use the corresponding PositionAssignmentStrategy to filter positions.
-        // For now, return an empty list.
-        return Collections.emptyList();
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found with id: " + studentId));
+
+        List<String> studentInterests = student.getInterests();
+        String studentPreferredLocation = student.getPreferredLocation();
+        List<String> studentSkills = student.getSkills();
+
+        List<TraineeshipPosition> availablePositions = traineeshipPositionRepository.getAvailableTraineeshipPositions();
+
+        return availablePositions.stream()
+                .filter(position -> {
+                    // Skill matching (required for all strategies)
+                    List<String> requiredSkills = position.getRequiredSkills();
+                    boolean skillsMatch = requiredSkills == null || requiredSkills.isEmpty() || studentSkills.containsAll(requiredSkills);
+                    if (!skillsMatch) {
+                        return false;
+                    }
+
+                    // Strategy-based filtering
+                    boolean interestMatch = studentInterests == null || studentInterests.isEmpty() ||
+                                            position.getTopics() == null || position.getTopics().isEmpty() ||
+                                            !Collections.disjoint(studentInterests, position.getTopics());
+
+                    boolean locationMatch = studentPreferredLocation == null || studentPreferredLocation.isEmpty() ||
+                                             position.getCompany() == null || position.getCompany().getLocation() == null ||
+                                             position.getCompany().getLocation().equalsIgnoreCase(studentPreferredLocation);
+
+                    switch (strategy.toLowerCase()) {
+                        case "interests":
+                            return interestMatch;
+                        case "location":
+                            return locationMatch;
+                        case "both":
+                            return interestMatch && locationMatch;
+                        default:
+                            return false; // Or throw an exception for invalid strategy
+                    }
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
     public String assignTraineeship(Long studentId, Long positionId) {
-        // Link the student with the position and update the state.
-        return "Traineeship assigned";
+        Student student = studentRepository.findById(studentId)
+                .orElseThrow(() -> new RuntimeException("Student not found with id: " + studentId));
+
+        TraineeshipPosition position = traineeshipPositionRepository.findById(positionId)
+                .orElseThrow(() -> new RuntimeException("Traineeship position not found with id: " + positionId));
+
+        if (position.getStudent() != null) {
+            return "Error: Traineeship position with ID " + positionId + " is already assigned to student " + position.getStudent().getUsername();
+        }
+
+        if (student.getTraineeshipPosition() != null) {
+            return "Error: Student " + student.getUsername() + " is already assigned to position ID " + student.getTraineeshipPosition().getId();
+        }
+
+        // Assign student to position
+        position.setStudent(student);
+        // Optionally, set the position for the student as well if the relationship is managed bidirectionally
+        // and you want the in-memory objects to be consistent immediately.
+        // student.setTraineeshipPosition(position); // The @OneToOne mapping in Student is mappedBy, so this is not strictly needed for DB persistence if Position is the owner.
+
+        traineeshipPositionRepository.save(position);
+
+        return "Traineeship position ID " + positionId + " successfully assigned to student " + student.getUsername() + ".";
     }
 
     @Override
