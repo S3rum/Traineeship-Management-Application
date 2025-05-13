@@ -8,7 +8,7 @@ import java.util.List;
 public interface CompanyService {
     Company findByUsername(String username);
     void updateCompanyProfile(Company updatedCompany, String username);
-    void createCompany(Company company);
+    Company createCompany(Company company);
     void announcePosition(TraineeshipPosition position);
     void deletePosition(Long positionId);
     void evaluateTraineeship(Evaluation evaluation);

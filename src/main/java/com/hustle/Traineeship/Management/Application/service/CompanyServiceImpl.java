@@ -20,8 +20,9 @@ public class CompanyServiceImpl implements CompanyService {
     private TraineeshipPositionRepository positionRepository;
 
     @Override
-    public void createCompany(Company company) {
+    public Company createCompany(Company company) {
         companyRepository.save(company);
+        return company;
     }
 
     @Override
