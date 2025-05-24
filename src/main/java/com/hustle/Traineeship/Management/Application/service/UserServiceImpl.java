@@ -3,6 +3,7 @@ package com.hustle.Traineeship.Management.Application.service;
 import com.hustle.Traineeship.Management.Application.model.*;
 import com.hustle.Traineeship.Management.Application.repos.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -34,15 +35,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User registerUser(User user) {
-        // Check if username is already taken
         if (userRepository.findByUsername(user.getUsername()).isPresent()) {
             throw new RuntimeException("Username '" + user.getUsername() + "' is already taken.");
         }
 
-        // Encode the raw password before saving
         user.setPassword(passwordEncoder.encode(user.getPassword()));
 
-        // Create the appropriate subclass instance with a basic profile
         User savedUser;
         switch (user.getRole()) {
             case STUDENT:
@@ -50,7 +48,6 @@ public class UserServiceImpl implements UserService {
                 student.setUsername(user.getUsername());
                 student.setPassword(user.getPassword());
                 student.setRole(user.getRole());
-                // Set empty values for required fields to create a basic profile
                 student.setFullName("");
                 student.setUniversityId(null);
                 savedUser = studentRepository.save(student);
@@ -84,9 +81,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public User loadUserByUsername(String username) throws UsernameNotFoundException {
-        return userRepository.findByUsername(username)
-                .orElseThrow(() -> new UsernameNotFoundException("User not found: " + username));
-
+    public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+        return null;
     }
 }

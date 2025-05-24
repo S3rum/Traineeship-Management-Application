@@ -7,14 +7,18 @@ import java.util.List;
 
 public interface CompanyService {
     Company findByUsername(String username);
+
     void updateCompanyProfile(Company updatedCompany, String username);
+
     Company createCompany(Company company);
+
     void announcePosition(TraineeshipPosition position);
+
     void deletePosition(Long positionId);
+
     void evaluateTraineeship(Evaluation evaluation);
 
     List<TraineeshipPosition> getAvailablePositions(Long companyId);
 
     TraineeshipPosition getTraineeshipPositionById(Long positionId);
-    // Additional methods as needed
 }

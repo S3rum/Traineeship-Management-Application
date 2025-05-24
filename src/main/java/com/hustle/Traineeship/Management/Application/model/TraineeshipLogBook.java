@@ -14,15 +14,13 @@ public class TraineeshipLogBook {
     private LocalDate startDate;
     private LocalDate endDate;
 
-    @Lob  // Use @Lob if the description can be long.
+    @Lob
     private String description;
 
-    // Many log entries can belong to one student.
     @ManyToOne
     @JoinColumn(name = "student_id")
     private Student student;
 
-    // --- Constructors ---
     public TraineeshipLogBook() { }
 
     public TraineeshipLogBook(LocalDate startDate, LocalDate endDate, String description, Student student) {
@@ -32,7 +30,6 @@ public class TraineeshipLogBook {
         this.student = student;
     }
 
-    // --- Getters and Setters ---
     public Long getId() {
         return id;
     }

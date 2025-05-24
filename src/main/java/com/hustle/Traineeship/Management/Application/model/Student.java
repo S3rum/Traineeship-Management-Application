@@ -20,7 +20,6 @@ public class Student extends User {
 
     private String preferredLocation;
 
-    // One-to-one relationship with a traineeship position (if assigned)
     @OneToOne(mappedBy = "student")
     private TraineeshipPosition traineeshipPosition;
 
@@ -103,10 +102,9 @@ public class Student extends User {
         this.traineeshipId = traineeshipId;
     }
 
-    // Method to set studentId after persisting (when ID is generated)
     @PostPersist
     public void setUniversityIdFromId() {
-        if (this.getId() != null) { // getId() is from the User superclass
+        if (this.getId() != null) {
             this.universityId = String.valueOf(this.getId() + 4000);
         }
     }

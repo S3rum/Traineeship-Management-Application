@@ -39,6 +39,4 @@ public class Company extends User {
     public void setLocation(String location) {
         this.location = location;
     }
-
-    // Optionally, getters and setters for traineeshipPositions if needed
 }

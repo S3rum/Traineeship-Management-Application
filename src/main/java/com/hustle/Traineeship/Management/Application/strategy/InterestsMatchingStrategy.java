@@ -18,12 +18,12 @@ public class InterestsMatchingStrategy implements PositionAssignmentStrategy {
         List<String> studentInterests = student.getInterests();
         return availablePositions.stream().filter(position -> {
             List<String> positionTopics = position.getTopics();
-            double similarity = computeJaccardSimilarity(studentInterests, positionTopics);
+            double similarity = computeJacquardSimilarity(studentInterests, positionTopics);
             return similarity > threshold;
         }).collect(Collectors.toList());
     }
 
-    private double computeJaccardSimilarity(List<String> set1, List<String> set2) {
+    private double computeJacquardSimilarity(List<String> set1, List<String> set2) {
         if (set1 == null || set2 == null || (set1.isEmpty() && set2.isEmpty())) {
             return 0;
         }

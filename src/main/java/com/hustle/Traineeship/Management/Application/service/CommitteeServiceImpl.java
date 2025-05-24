@@ -15,15 +15,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collections;
 import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
 public class CommitteeServiceImpl implements CommitteeService {
-
-    // Inject the necessary repositories and services
-    // For the strategy pattern, you might have a factory that returns the correct strategy based on the parameter.
 
     @Autowired
     private TraineeshipPositionRepository traineeshipPositionRepository;
@@ -37,7 +32,7 @@ public class CommitteeServiceImpl implements CommitteeService {
     @Autowired
     private StudentsService studentsService;
 
-    @Autowired // Added ProfessorService injection
+    @Autowired
     private ProfessorService professorService;
 
     @Override
@@ -48,11 +43,8 @@ public class CommitteeServiceImpl implements CommitteeService {
 
     @Override
     public Student getApplicantByUniversityId(String universityId) {
-        // Assuming StudentRepository has a method to find by universityId.
-        // If universityId is unique, this should return a single Student or null/Optional.empty().
-        // If universityId is not the primary key, ensure the repository method handles it correctly.
         return studentRepository.findByUniversityId(universityId)
-                .orElse(null); // Or throw an exception if a student must always be found
+                .orElse(null);
     }
 
     @Override
@@ -64,11 +56,11 @@ public class CommitteeServiceImpl implements CommitteeService {
         String studentPreferredLocation = student.getPreferredLocation();
         List<String> studentSkills = student.getSkills();
 
-        List<TraineeshipPosition> availablePositions = traineeshipPositionRepository.getAvailableTraineeshipPositions();
+        List<TraineeshipPosition> availablePositions = traineeshipPositionRepository.findByStudentIsNull();
 
         return availablePositions.stream()
                 .filter(position -> {
-                    // Skill matching (required for all strategies)
+                    // Skill matching
                     List<String> requiredSkills = position.getRequiredSkills();
                     boolean skillsMatch = requiredSkills == null || requiredSkills.isEmpty() || studentSkills.containsAll(requiredSkills);
                     if (!skillsMatch) {
@@ -92,7 +84,7 @@ public class CommitteeServiceImpl implements CommitteeService {
                         case "both":
                             return interestMatch && locationMatch;
                         default:
-                            return false; // Or throw an exception for invalid strategy
+                            return false;
                     }
                 })
                 .collect(Collectors.toList());
@@ -116,19 +108,19 @@ public class CommitteeServiceImpl implements CommitteeService {
 
         // Assign student to position and position ID to student
         position.setStudent(student);
-        student.setTraineeshipPosition(position); // Keep both sides of the relationship in sync in memory
+        student.setTraineeshipPosition(position);
         student.setTraineeshipId(position.getId());
-        position.setStatus(TraineeshipStatus.IN_PROGRESS); // Set status to IN_PROGRESS
+        position.setStatus(TraineeshipStatus.IN_PROGRESS);
 
         // Ensure an Evaluation object exists for this traineeship position
         if (position.getEvaluation() == null) {
             Evaluation newEvaluation = new Evaluation();
-            newEvaluation.setTraineeshipPosition(position); // Set the owning side of the relationship for FK
-            position.setEvaluation(newEvaluation);          // Set the reference in the mappedBy side
+            newEvaluation.setTraineeshipPosition(position);
+            position.setEvaluation(newEvaluation);
         }
 
-        traineeshipPositionRepository.save(position); // Position is the owner, save it first or ensure cascading is correct
-        studentRepository.save(student); // Save student to persist traineeshipId and traineeshipPosition reference
+        traineeshipPositionRepository.save(position);
+        studentRepository.save(student);
 
         return "Traineeship position ID " + positionId + " successfully assigned to student " + student.getUsername() + ".";
     }
@@ -139,7 +131,6 @@ public class CommitteeServiceImpl implements CommitteeService {
                 .orElseThrow(() -> new RuntimeException("Traineeship position not found with id: " + positionId));
 
         Professor professor = professorService.findProfessorById(professorId);
-        // findProfessorById already throws if not found, so no null check needed here.
 
         position.setSupervisor(professor);
         traineeshipPositionRepository.save(position);
@@ -153,20 +144,14 @@ public class CommitteeServiceImpl implements CommitteeService {
     }
 
     @Override
-    @Transactional // Add transactional because we might update status
+    @Transactional
     public List<TraineeshipPosition> getFullyAssignedTraineeships() {
         List<TraineeshipPosition> positions = traineeshipPositionRepository.findByStudentIsNotNullAndSupervisorIsNotNullAndEndDateAfter(java.time.LocalDate.now());
         
-        // Ensure that any "fully assigned" position with a null status is updated to IN_PROGRESS
         boolean needsSave = false;
         for (TraineeshipPosition position : positions) {
             if (position.getStatus() == null) {
                 position.setStatus(TraineeshipStatus.IN_PROGRESS);
-                // No need to save individually if the repository save is outside loop and covers all changes
-                // However, saving each one ensures it, or collect and save all.
-                // For simplicity here, let's assume the JPA context handles changes if the list is managed.
-                // To be explicit and safe, we can save each one or save the list if the method allows.
-                // Let's save each one that gets modified to be sure.
                 traineeshipPositionRepository.save(position);
             }
         }
@@ -202,11 +187,9 @@ public class CommitteeServiceImpl implements CommitteeService {
         Evaluation evaluation = position.getEvaluation();
         
         if (evaluation == null) {
-            // If no evaluation exists, create one, link it, and save.
             evaluation = new Evaluation();
-            evaluation.setTraineeshipPosition(position); // Set the owning side
-            position.setEvaluation(evaluation);          // Set the mappedBy side
-            // Saving the position should cascade to save the new evaluation due to CascadeType.ALL
+            evaluation.setTraineeshipPosition(position);
+            position.setEvaluation(evaluation);
             traineeshipPositionRepository.save(position);
         }
         return evaluation;

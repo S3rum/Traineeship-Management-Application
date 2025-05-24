@@ -11,12 +11,12 @@ public class Evaluation {
     @Column(columnDefinition = "BIGINT UNSIGNED")
     private Long id;
 
-    // Evaluation by company (e.g., for a traineeship in progress)
+    // Evaluation by company
     private Integer motivationRating;
     private Integer effectivenessRating;
     private Integer efficiencyRating;
 
-    // Evaluation by professor (for supervised positions)
+    // Evaluation by professor
     private Integer professorMotivationRating;
     private Integer professorEffectivenessRating;
     private Integer professorEfficiencyRating;
@@ -106,7 +106,4 @@ public class Evaluation {
     public void setCompanyGuidanceRating(Integer companyGuidanceRating) {
         this.companyGuidanceRating = companyGuidanceRating;
     }
-
-    // Constructors, getters and setters
-    // ...
 }

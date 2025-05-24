@@ -178,7 +178,7 @@ public class CommitteeController {
         List<com.hustle.Traineeship.Management.Application.model.Professor> professors = professorService.getAllProfessors();
         model.addAttribute("traineeships", traineeships);
         model.addAttribute("professors", professors);
-        return "committee/assign-professors";
+        return "assign-professors";
     }
 
     @PostMapping("/do-assign-supervisor")

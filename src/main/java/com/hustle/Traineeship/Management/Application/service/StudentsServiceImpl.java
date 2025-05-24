@@ -35,10 +35,8 @@ public class StudentsServiceImpl implements StudentsService {
     }
 
     @Override
-    public Student updateStudentProfile(Student updatedStudent, String username) {
-        Student existingStudent = studentRepository.findByUsername(username)
-                .orElseThrow(() -> new RuntimeException("Student not found for username: " + username));
-
+    public void updateStudentProfile(Student updatedStudent, String username) {
+        Student existingStudent = findByUsername(username);
         existingStudent.setFullName(updatedStudent.getFullName());
         existingStudent.setUniversityId(updatedStudent.getUniversityId());
         existingStudent.setInterests(updatedStudent.getInterests());
@@ -46,49 +44,29 @@ public class StudentsServiceImpl implements StudentsService {
         existingStudent.setPreferredLocation(updatedStudent.getPreferredLocation());
         existingStudent.setUniversityIdFromId();
 
-        return studentRepository.save(existingStudent);
+        studentRepository.save(existingStudent);
     }
 
     @Override
     public String applyForTraineeship(Long studentId, Long positionId) {
-        // Retrieve the student from the database
         Student student = findStudentById(studentId);
 
-        // Retrieve the traineeship position using its id
         TraineeshipPosition position = positionRepository.findById(positionId)
                 .orElseThrow(() -> new RuntimeException("Traineeship position not found for id: " + positionId));
 
-        // Check if the position is already assigned to a student.
         if (position.getStudent() != null) {
             return "This traineeship position is already taken.";
         }
 
-        // Assign the student to the traineeship position
         position.setStudent(student);
-
-        // Save the updated position, which will update the foreign key (student_id) in the database
         positionRepository.save(position);
-
         return "Application successful";
     }
-
-
-    // Optionally, you can remove or repurpose this method.
-    @Override
-    public String updateLogbook(Long studentId, String entries) {
-        return "Logbook updated";
-    }
-
 
     @Override
     public Student findStudentById(Long studentId) {
         return studentRepository.findById(studentId)
                 .orElseThrow(() -> new RuntimeException("Student not found for studentId: " + studentId));
-    }
-
-    @Override
-    public List<TraineeshipPosition> getAvailableTraineeshipPositions() {
-        return positionRepository.getAvailableTraineeshipPositions();
     }
 
     @Override
@@ -115,17 +93,10 @@ public class StudentsServiceImpl implements StudentsService {
     }
 
     @Override
-    public TraineeshipLogBook updateLogEntry(Long studentId, TraineeshipLogBook entry) {
-        // Here, you can ensure the student is set and then update.
+    public void updateLogEntry(Long studentId, TraineeshipLogBook entry) {
         Student student = findStudentById(studentId);
         entry.setStudent(student);
-        return logBookRepository.save(entry);
-    }
-
-    @Override
-    public Student findStudentByTraineeshipId(Long traineeshipId) {
-        return studentRepository.findByTraineeshipId(traineeshipId)
-                .orElseThrow(() -> new RuntimeException("Student not found for traineeshipId: " + traineeshipId));
+        logBookRepository.save(entry);
     }
 
     @Override
@@ -137,7 +108,7 @@ public class StudentsServiceImpl implements StudentsService {
     public void setTraineeshipId(Long studentId) {
         Student student = findStudentById(studentId);
         student.setTraineeshipPosition(null);
-        student.setTraineeshipId(0L); // Use 0L for long literal consistency
+        student.setTraineeshipId(0L); // Use 0L
         studentRepository.save(student);
     }
 }
