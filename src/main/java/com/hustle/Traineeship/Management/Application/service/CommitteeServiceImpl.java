@@ -13,7 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -50,42 +49,40 @@ public class CommitteeServiceImpl implements CommitteeService {
     @Override
     public List<TraineeshipPosition> searchPositionsForStudent(Long studentId, String strategy) {
         Student student = studentRepository.findById(studentId)
-                .orElseThrow(() -> new RuntimeException("Student not found with id: " + studentId));
-
-        List<String> studentInterests = student.getInterests();
-        String studentPreferredLocation = student.getPreferredLocation();
-        List<String> studentSkills = student.getSkills();
+                .orElseThrow(() -> new RuntimeException("Student not found"));
 
         List<TraineeshipPosition> availablePositions = traineeshipPositionRepository.findByStudentIsNull();
 
         return availablePositions.stream()
                 .filter(position -> {
-                    // Skill matching
+                    List<String> studentInterests = student.getInterests();
+                    String studentLocation = student.getPreferredLocation();
+                    List<String> studentSkills = student.getSkills();
+
+                    List<String> positionTopics = position.getTopics();
+                    String companyLocation = position.getCompany() != null ? position.getCompany().getLocation() : null;
                     List<String> requiredSkills = position.getRequiredSkills();
-                    boolean skillsMatch = requiredSkills == null || requiredSkills.isEmpty() || studentSkills.containsAll(requiredSkills);
-                    if (!skillsMatch) {
-                        return false;
-                    }
 
-                    // Strategy-based filtering
-                    boolean interestMatch = studentInterests == null || studentInterests.isEmpty() ||
-                                            position.getTopics() == null || position.getTopics().isEmpty() ||
-                                            !Collections.disjoint(studentInterests, position.getTopics());
+                    boolean interestMatch = (studentInterests == null || studentInterests.isEmpty() ||
+                            positionTopics == null || positionTopics.isEmpty() ||
+                            studentInterests.stream().anyMatch(positionTopics::contains));
 
-                    boolean locationMatch = studentPreferredLocation == null || studentPreferredLocation.isEmpty() ||
-                                             position.getCompany() == null || position.getCompany().getLocation() == null ||
-                                             position.getCompany().getLocation().equalsIgnoreCase(studentPreferredLocation);
+                    boolean locationMatch = (studentLocation == null || studentLocation.trim().isEmpty() ||
+                            companyLocation == null || companyLocation.trim().isEmpty() ||
+                            studentLocation.trim().equalsIgnoreCase(companyLocation.trim()));
 
-                    switch (strategy.toLowerCase()) {
-                        case "interests":
-                            return interestMatch;
-                        case "location":
-                            return locationMatch;
-                        case "both":
-                            return interestMatch && locationMatch;
-                        default:
-                            return false;
-                    }
+                    boolean skillsMatch = (studentSkills == null || studentSkills.isEmpty() ||
+                            requiredSkills == null || requiredSkills.isEmpty() ||
+                            studentSkills.stream().anyMatch(requiredSkills::contains));
+
+                    return switch (strategy.toLowerCase()) {
+                        case "interests" -> interestMatch;
+                        case "location" -> locationMatch;
+                        case "both" -> interestMatch && locationMatch;
+                        case "skills" -> skillsMatch;
+                        case "all" -> interestMatch && locationMatch && skillsMatch;
+                        default -> false;
+                    };
                 })
                 .collect(Collectors.toList());
     }
@@ -106,13 +103,11 @@ public class CommitteeServiceImpl implements CommitteeService {
             return "Error: Student " + student.getUsername() + " is already assigned to position ID " + student.getTraineeshipPosition().getId();
         }
 
-        // Assign student to position and position ID to student
         position.setStudent(student);
         student.setTraineeshipPosition(position);
         student.setTraineeshipId(position.getId());
         position.setStatus(TraineeshipStatus.IN_PROGRESS);
 
-        // Ensure an Evaluation object exists for this traineeship position
         if (position.getEvaluation() == null) {
             Evaluation newEvaluation = new Evaluation();
             newEvaluation.setTraineeshipPosition(position);
@@ -147,8 +142,7 @@ public class CommitteeServiceImpl implements CommitteeService {
     @Transactional
     public List<TraineeshipPosition> getFullyAssignedTraineeships() {
         List<TraineeshipPosition> positions = traineeshipPositionRepository.findByStudentIsNotNullAndSupervisorIsNotNullAndEndDateAfter(java.time.LocalDate.now());
-        
-        boolean needsSave = false;
+
         for (TraineeshipPosition position : positions) {
             if (position.getStatus() == null) {
                 position.setStatus(TraineeshipStatus.IN_PROGRESS);
