@@ -8,7 +8,6 @@ import com.hustle.Traineeship.Management.Application.model.Professor;
 import com.hustle.Traineeship.Management.Application.service.StudentsService;
 import com.hustle.Traineeship.Management.Application.service.ProfessorService;
 import com.hustle.Traineeship.Management.Application.service.CompanyService;
-import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.security.core.Authentication;
@@ -20,7 +19,6 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     private final StudentsService studentsService;
     private final ProfessorService professorService;
     private final CompanyService companyService;
-    // Constructor injection for both services
     public CustomAuthenticationSuccessHandler(StudentsService studentsService, ProfessorService professorsService, CompanyService companyService) {
         this.studentsService = studentsService;
         this.professorService = professorsService;
@@ -31,7 +29,7 @@ public class CustomAuthenticationSuccessHandler implements AuthenticationSuccess
     public void onAuthenticationSuccess(HttpServletRequest request,
                                         HttpServletResponse response,
                                         Authentication authentication)
-            throws IOException, ServletException {
+            throws IOException {
 
         User user = (User) authentication.getPrincipal();
         Role role = user.getRole();

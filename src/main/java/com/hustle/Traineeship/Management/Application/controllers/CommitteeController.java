@@ -87,6 +87,32 @@ public class CommitteeController {
         return "applicant-details";
     }
 
+    @GetMapping("/applicant/{universityId}/traineeships/skills")
+    public String viewTraineeshipsBySkills(@PathVariable String universityId, Model model) {
+        Student student = committeeService.getApplicantByUniversityId(universityId);
+        if (student == null) {
+            return "redirect:/committee/applicants?error=StudentNotFound";
+        }
+        List<TraineeshipPosition> positions = committeeService.searchPositionsForStudent(student.getId(), "skills");
+        model.addAttribute("student", student);
+        model.addAttribute("searchType", "Skills");
+        model.addAttribute("traineeshipPositions", positions);
+        return "applicant-details";
+    }
+
+    @GetMapping("/applicant/{universityId}/traineeships/all")
+    public String viewTraineeshipsByAll(@PathVariable String universityId, Model model) {
+        Student student = committeeService.getApplicantByUniversityId(universityId);
+        if (student == null) {
+            return "redirect:/committee/applicants?error=StudentNotFound";
+        }
+        List<TraineeshipPosition> positions = committeeService.searchPositionsForStudent(student.getId(), "all");
+        model.addAttribute("student", student);
+        model.addAttribute("searchType", "All Criteria");
+        model.addAttribute("traineeshipPositions", positions);
+        return "applicant-details";
+    }
+
     @GetMapping("/positions")
     @ResponseBody
     public List<TraineeshipPosition> searchPositions(@RequestParam Long studentId,
@@ -110,6 +136,7 @@ public class CommitteeController {
 
         if (message.startsWith("Error:")) {
             redirectAttributes.addFlashAttribute("errorMessage", message);
+            return "redirect:/committee/applicants";
         } else {
             redirectAttributes.addFlashAttribute("successMessage", message);
         }
@@ -117,7 +144,7 @@ public class CommitteeController {
         if (student != null && student.getUniversityId() != null) {
             return "redirect:/committee/applicant/" + student.getUniversityId() + "/details";
         } else {
-            redirectAttributes.addFlashAttribute("errorMessage", (message.startsWith("Error:") ? message : "Assignment successful, but could not redirect to student details."));
+            redirectAttributes.addFlashAttribute("errorMessage", "Assignment successful, but could not redirect to student details.");
             return "redirect:/committee/applicants";
         }
     }
@@ -178,7 +205,7 @@ public class CommitteeController {
         List<com.hustle.Traineeship.Management.Application.model.Professor> professors = professorService.getAllProfessors();
         model.addAttribute("traineeships", traineeships);
         model.addAttribute("professors", professors);
-        return "committee/assign-professors";
+        return "assign-professors";
     }
 
     @PostMapping("/do-assign-supervisor")

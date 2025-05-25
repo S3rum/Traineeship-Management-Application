@@ -25,6 +25,26 @@
         .no-results { color: #888; font-style: italic; }
         .error-message { color: red; font-weight: bold; }
         .success-message { color: green; font-weight: bold; }
+        .search-buttons {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        .search-button {
+            background-color: #007BFF;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            min-width: 200px;
+            text-align: center;
+        }
+        .search-button:hover {
+            background-color: #0056b3;
+        }
     </style>
 </head>
 <body>
@@ -49,15 +69,23 @@
         <!-- Search Actions -->
         <div th:if="${student != null}" class="search-actions">
             <h2>Find Traineeship Positions</h2>
-            <a th:href="@{/committee/applicant/{id}/traineeships/interests(id=${student.universityId})}">
-                <button type="button">Search by Interests</button>
-            </a>
-            <a th:href="@{/committee/applicant/{id}/traineeships/location(id=${student.universityId})}">
-                <button type="button">Search by Location</button>
-            </a>
-            <a th:href="@{/committee/applicant/{id}/traineeships/both(id=${student.universityId})}">
-                <button type="button">Search by Interests and Location</button>
-            </a>
+            <div class="search-buttons">
+                <a th:href="@{/committee/applicant/{id}/traineeships/interests(id=${student.universityId})}">
+                    <button type="button" class="search-button">Search by Interests Only</button>
+                </a>
+                <a th:href="@{/committee/applicant/{id}/traineeships/location(id=${student.universityId})}">
+                    <button type="button" class="search-button">Search by Location Only</button>
+                </a>
+                <a th:href="@{/committee/applicant/{id}/traineeships/both(id=${student.universityId})}">
+                    <button type="button" class="search-button">Search by Interests and Location</button>
+                </a>
+                <a th:href="@{/committee/applicant/{id}/traineeships/skills(id=${student.universityId})}">
+                    <button type="button" class="search-button">Search by Skills Only</button>
+                </a>
+                <a th:href="@{/committee/applicant/{id}/traineeships/all(id=${student.universityId})}">
+                    <button type="button" class="search-button">Search by All Criteria</button>
+                </a>
+            </div>
         </div>
 
         <!-- Display Search Results -->

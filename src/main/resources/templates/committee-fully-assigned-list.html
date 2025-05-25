@@ -124,7 +124,7 @@
                             View Evaluations
                         </button>
                         
-                        <th:block th:if="${traineeship.status == T(com.hustle.Traineeship.Management.Application.model.TraineeshipStatus).IN_PROGRESS or traineeship.status == T(com.hustle.Traineeship.Management.Application.model.TraineeshipStatus).EVALUATION_COMPLETED or traineeship.status == T(com.hustle.Traineeship.Management.Application.model.TraineeshipStatus).AWAITING_EVALUATION}">
+                        <th:block th:if="${traineeship.status == T(com.hustle.Traineeship.Management.Application.model.TraineeshipStatus).IN_PROGRESS}">
                             <form th:action="@{/committee/finalize}" method="post" style="display: inline;">
                                 <input type="hidden" name="positionId" th:value="${traineeship.id}" />
                                 <input type="hidden" name="pass" value="true" />
@@ -198,7 +198,7 @@ function viewEvaluations(positionId) {
 
 window.onclick = function(event) {
     const modal = document.getElementById('evaluationModal');
-    if (event.target == modal) {
+    if (event.target === modal) {
         modal.style.display = "none";
     }
 }

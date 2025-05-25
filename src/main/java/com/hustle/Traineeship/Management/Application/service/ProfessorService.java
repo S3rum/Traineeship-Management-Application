@@ -7,7 +7,9 @@ import java.util.List;
 
 public interface ProfessorService {
     Professor createProfessorProfile(Professor professor);
+
     List<TraineeshipPosition> getSupervisedPositions(Long professorId);
+
     void evaluateTraineeship(Evaluation evaluation);
 
     List<Professor> getAllProfessors();
@@ -15,6 +17,8 @@ public interface ProfessorService {
     Professor findProfessorById(Long professorId);
 
     Professor findByUsername(String username);
+
     void updateProfessorProfile(Professor updatedProfessor, String username);
+
     TraineeshipPosition findTraineeshipPositionById(Long positionId);
 }

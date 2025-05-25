@@ -18,14 +18,12 @@ public class AuthController {
     private UserService userService;
 
 
-    // Display the registration form using Thymeleaf
     @GetMapping("/register")
     public String showRegistrationForm(Model model) {
         model.addAttribute("user", new User());
-        return "register";  // resolves to register.html
+        return "register";
     }
 
-    // Process the registration form submission
     @PostMapping("/register")
     public String register(@ModelAttribute("user") User user, Model model) {
         try {
@@ -39,10 +37,9 @@ public class AuthController {
         }
     }
 
-    // Display the login form using Thymeleaf
     @GetMapping("/login")
     public String showLoginForm() {
-        return "login"; // Thymeleaf will resolve this to login.html
+        return "login";
     }
 
 }

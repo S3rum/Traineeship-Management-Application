@@ -12,5 +12,4 @@ public class Committee extends User {
     public Committee(String username, String password, Role role) {
         super(username, password, role);
     }
-    // Add more fields if needed in the future
-} 
+}
