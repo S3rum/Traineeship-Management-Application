@@ -94,7 +94,7 @@ class CommitteeTest {
         List<TraineeshipPosition> availablePositions = Arrays.asList(position1, position2, position3);
 
         when(studentRepository.findById(studentId)).thenReturn(Optional.of(student));
-        when(traineeshipPositionRepository.getAvailableTraineeshipPositions()).thenReturn(availablePositions);
+        when(traineeshipPositionRepository.findByStudentIsNull()).thenReturn(availablePositions);
 
         // Act
         List<TraineeshipPosition> result = committeeServiceImpl.searchPositionsForStudent(studentId, strategy);
@@ -106,7 +106,7 @@ class CommitteeTest {
         assertFalse(result.contains(position2));
 
         verify(studentRepository, times(1)).findById(studentId);
-        verify(traineeshipPositionRepository, times(1)).getAvailableTraineeshipPositions();
+        verify(traineeshipPositionRepository, times(1)).findByStudentIsNull();
     }
     @Test
     void testAssignTraineeship() {

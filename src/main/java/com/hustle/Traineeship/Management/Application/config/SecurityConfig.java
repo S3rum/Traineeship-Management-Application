@@ -21,7 +21,7 @@ public class SecurityConfig {
     private StudentsService studentsService;
 
     @Autowired
-    private ProfessorService professorService;  // Inject the professor service
+    private ProfessorService professorService;
 
     @Autowired
     private CompanyService companyService;
@@ -36,14 +36,13 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
-                        .loginPage("/auth/login") // custom login page
-                        // Now call customSuccessHandler with both dependencies
+                        .loginPage("/auth/login")
                         .successHandler(customSuccessHandler(studentsService, professorService,companyService))
                         .permitAll()
                 )
                 .logout(logout -> logout
                         .logoutUrl("/logout")
-                        .logoutSuccessUrl("/") // Redirects to homepage after logout
+                        .logoutSuccessUrl("/")
                         .permitAll()
                 );
 

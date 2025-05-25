@@ -41,7 +41,7 @@ public class TraineeshipPosition {
     private Evaluation evaluation;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = true) // Or false if a default is always set
+    @Column(nullable = true)
     private TraineeshipStatus status;
 
     public Long getId() {

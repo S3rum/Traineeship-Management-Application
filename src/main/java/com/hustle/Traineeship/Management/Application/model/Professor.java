@@ -25,7 +25,6 @@ public class Professor extends User {
         this.interests = interests;
     }
 
-    // Getter and Setter for fullName
     public String getFullName() {
         return fullName;
     }
@@ -34,7 +33,6 @@ public class Professor extends User {
         this.fullName = fullName;
     }
 
-    // Getter and Setter for interests
     public List<String> getInterests() {
         return interests;
     }
@@ -43,7 +41,6 @@ public class Professor extends User {
         this.interests = interests;
     }
 
-    // Getter and Setter for supervisedPositions
     public List<TraineeshipPosition> getSupervisedPositions() {
         return supervisedPositions;
     }

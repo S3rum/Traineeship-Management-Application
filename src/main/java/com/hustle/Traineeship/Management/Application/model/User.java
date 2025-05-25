@@ -5,9 +5,10 @@ import jakarta.validation.constraints.NotBlank;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
-import java.util.Set;
+import java.util.List;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 @Entity
 @Table(name = "users")
@@ -41,7 +42,6 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-
     public LocalDateTime getLastLoginTime() {
         return lastLoginTime;
     }
@@ -65,20 +65,19 @@ public class User implements UserDetails {
         this.role = role;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Return a default role if role is null (optional)
-        return Set.of(() -> "ROLE_" + (role != null ? role.name() : "USER"));
-    }
 
     @Override
     public String getUsername() {
         return username;
     }
 
-    // Setter needed for Thymeleaf binding
     public void setUsername(String username) {
         this.username = username;
+    }
+
+    @Override
+    public Collection<? extends GrantedAuthority> getAuthorities() {
+        return List.of(new SimpleGrantedAuthority("ROLE_" + role.name()));
     }
 
     @Override
@@ -86,12 +85,11 @@ public class User implements UserDetails {
         return password;
     }
 
-    // Setter needed for Thymeleaf binding
+
     public void setPassword(String password) {
         this.password = password;
     }
 
-    // The following methods are required by the UserDetails interface
     @Override
     public boolean isAccountNonExpired() {
         return true;
